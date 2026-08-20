@@ -1,4 +1,4 @@
 User-agent: *
 Disallow:
 
-Sitemap: https://sukritimanna.github.io/sitemap.xml
+Sitemap: https://sukritimanna.com/sitemap.xml
