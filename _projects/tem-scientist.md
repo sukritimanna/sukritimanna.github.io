@@ -1,29 +1,46 @@
 ---
 layout: page
 title: TEM-Scientist
-description: Compiled autonomy for transmission electron microscopy
+description: Verified experimental protocols for agentic electron microscopy
 img: assets/img/projects/tem-scientist.png
-importance: 2
+importance: 1
 category: software
 redirect: /assets/pages/tem-scientist.html
 related_publications: false
 ---
 
-**TEM-Scientist** is an autonomy stack for transmission electron microscopy in which natural-language experimental goals are *compiled* into typed, statically verified protocols, rehearsed against a physics-aware digital twin, and then executed deterministically on the instrument — with no language model in the loop at run time.
+**TEM-Scientist** is a compile–rehearse–execute–reflect architecture for autonomous transmission electron microscopy. Rather than placing a language model in the millisecond-scale instrument control loop — where its stochasticity, latency, and silent failures compromise experimental safety — TEM-Scientist moves the model *above* the loop: it compiles a natural-language experimental goal into a typed, verifiable protocol, rehearses that protocol against a physics-aware simulator under injected faults, and then executes it with a deterministic runtime that requires no further model involvement.
 
-The stack separates the LLM's role (**planning**) from the compiler's role (**deciding**): the model proposes a protocol, but a typed lint gate and a TWIN rehearsal environment must accept it before a single lens current changes. Rejected protocols loop back to the compiler or terminate as refusals with a full paper trail. Ledgers and traces from every run feed a reflect stage that proposes the next goal or a modality escalation.
+The architecture separates deliberation from protection, and detection from correction. The compiled protocol is a finite state machine over a closed set of instrument primitives, carrying declared dose and motion invariants and a table of edge-triggered reflexes; a two-layer verification gate (static lints plus behavioral rehearsal) admits only protocols that satisfy the frozen objective contract; and a runtime with frame-rate reflexes responds to safety-critical events five orders of magnitude faster than a per-step model round-trip. The compiled protocol is itself the reviewable artifact — reproducible, citable, and diffable.
 
-**Status:** Active development
+**Status:** Active development · Preprint 2026
 
-**Role:** Lead architect and developer
+**Role:** First author and lead developer, in collaboration with Yuqing Huang (ANL/CNM), Rama Vasudevan (ORNL/CNMS), Yuzi Liu (ANL/CNM), and Subramanian Sankaranarayanan (UIC/ANL).
 
-### Key ideas
+### Key contributions
 
-- **Compile-time verification** — protocols are typed and statically checked before instrument time is spent
-- **Physics-aware digital twin** — every protocol is rehearsed against a forward simulator before execution
-- **No LLM in the run-time loop** — the model plans; the compiler decides; the instrument executes
-- **Modality-aware autonomy** — the compiler stops at the first microscopy modality that can discriminate the hypothesis, minimizing dose and time
+- **Compile–rehearse–execute architecture** — separates model deliberation from deterministic execution
+- **Objective contract** — an immutable, verifiable specification of what the experiment must achieve
+- **TWINTEM behavioral simulator** — physics-aware digital twin with Poisson-limited imaging, drift, defocus, cumulative beam damage, and fault injection
+- **Frame-rate reflexes** — protective response with median 6.6 µs latency, against 2.1 s for per-step LLM control
+- **114-task benchmark catalog** with 25-task executable subset and a held-out locked evaluation suite
+- **Failure taxonomy and repair loop** — legible, layer-localized failure classes with static and behavioral diagnostics
 
-### Application scope
+### Links
 
-Light-element ordering, strain fields, valence and oxidation state, magnetic and polar structure, and short-range disorder — each is legible in some TEM modalities and invisible in others. TEM-Scientist compiles the decision of *which signal carries the answer*, and stops at the modality that can actually discriminate it.
+- GitHub: [sukritimanna/TEM-Scientist](https://github.com/sukritimanna/TEM-Scientist)
+
+### Citation
+
+{% raw %}
+```bibtex
+@article{manna2026temscientist,
+  title   = {Verified Experimental Protocols for Agentic Electron Microscopy},
+  author  = {Manna, Sukriti and Huang, Yuqing and Vasudevan, Rama and
+             Liu, Yuzi and Sankaranarayanan, Subramanian K. R. S.},
+  journal = {arXiv preprint},
+  year    = {2026},
+  note    = {Under review}
+}
+```
+{% endraw %}
