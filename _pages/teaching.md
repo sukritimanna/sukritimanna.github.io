@@ -15,19 +15,9 @@ A detailed teaching statement is available [here](/assets/pdf/teaching_statement
 
 ## Mentoring
 
-I have mentored **13 graduate students, 1 postdoctoral fellow, and 2 K–12 students** across my appointments at the University of Illinois Chicago, Argonne National Laboratory, Johns Hopkins University, and the Colorado School of Mines. Many have co-authored peer-reviewed publications, and two K–12 mentees (NAACP ACT-SO program) have earned national medals in Chemistry.
+I have mentored **10+ graduate students, 1 postdoctoral fellow, and 2 K–12 students** across my appointments at the University of Illinois Chicago, Argonne National Laboratory, Johns Hopkins University, and the Colorado School of Mines. Many mentees have co-authored peer-reviewed publications, and two K–12 mentees (NAACP ACT-SO program) have earned national medals in Chemistry.
 
-**At the University of Illinois Chicago / Argonne National Laboratory** (2019–present)
-- Abibat Adekoya-Olowofela, Sanchari Saha, Dipayan Sanpui, Suvo Banik, Aditya Koneru, Bilvin Varughese, Partha Sarathi Dutta, Adil Muhammad, Arnab Neogi *(graduate students)*
-- Suman Chakraborty *(postdoctoral fellow)*
-
-**At Johns Hopkins University** (2018–2019)
-- Alberto Hernandez, Peter Lile *(graduate students)*
-
-**At Colorado School of Mines** (2015–2018)
-- Abdulfattah Ab. Ab. Abdulslam, Sri Ranga Jai Likith *(graduate students)*
-
-**K–12 outreach** — NAACP ACT-SO Youth Program
+**K–12 outreach — NAACP ACT-SO Youth Program**
 - Kudzi Makoni (Neuqua Valley High School) — Silver Medal, Chemistry, 2026 NAACP ACT-SO Competition; Bronze Medal, 2025.
 
 ---
