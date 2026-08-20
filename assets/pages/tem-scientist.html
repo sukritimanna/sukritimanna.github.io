@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TEM-Scientist — Compiled autonomy for electron microscopy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'\\(',right:'\\)',display:false}],throwOnError:false,strict:false,macros:{'\\ledger':'\\mathsf{ledger}'}});"></script>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Spectral:ital,wght@0,300;0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#ECEEE9;
+  --panel:#F7F8F6;
+  --ink:#171B18;
+  --graphite:#565D58;
+  --hairline:#C9CEC7;
+  --phosphor:#2F7D5B;
+  --phosphor-dim:#DDEAE2;
+  --amber:#B96F1F;
+  --micrograph:#0B0E0C;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+  --serif:'Spectral',Georgia,serif;
+  --disp:'Archivo',system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--serif);
+  font-size:17px;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:inherit}
+a:focus-visible,button:focus-visible{outline:2px solid var(--phosphor);outline-offset:3px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+
+/* ---------- metadata strips (section dividers) ---------- */
+.meta-strip{
+  display:flex;flex-wrap:wrap;gap:6px 28px;align-items:baseline;
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;
+  color:var(--graphite);text-transform:uppercase;
+  border-top:1px solid var(--ink);
+  padding-top:10px;
+}
+.meta-strip .tag{color:var(--phosphor);font-weight:600}
+.meta-strip .idx{color:var(--ink);font-weight:600}
+
+/* ---------- top bar ---------- */
+header.top{
+  border-bottom:1px solid var(--ink);
+  background:var(--paper);
+}
+.topbar{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:18px 0;gap:16px;flex-wrap:wrap;
+}
+.wordmark{
+  font-family:var(--disp);font-weight:800;font-size:18px;
+  letter-spacing:.02em;text-decoration:none;display:flex;align-items:center;gap:10px;
+}
+.wordmark .dot{width:9px;height:9px;border-radius:50%;background:var(--phosphor);display:inline-block}
+.back-to-main{
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;
+  color:var(--graphite);text-decoration:none;white-space:nowrap;
+  transition:color .15s ease;
+}
+.back-to-main:hover{color:var(--phosphor)}
+nav.main{display:flex;gap:26px;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+nav.main a{text-decoration:none;color:var(--graphite)}
+nav.main a:hover{color:var(--ink)}
+
+/* ---------- hero ---------- */
+.hero{padding:64px 0 72px}
+.hero-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:56px;align-items:start}
+.hero h1{
+  font-family:var(--disp);font-weight:800;
+  font-size:clamp(38px,5.4vw,60px);
+  line-height:1.02;letter-spacing:-.015em;
+  margin:18px 0 22px;
+}
+.hero h1 .green{color:var(--phosphor)}
+.eyebrow{
+  font-family:var(--mono);font-size:12px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--graphite);
+}
+.hero p.lede{font-size:19px;font-weight:300;max-width:44ch;color:#2A2F2B}
+.hero p.lede strong{font-weight:500}
+.hero-ctas{display:flex;gap:14px;margin-top:30px;flex-wrap:wrap}
+.btn{
+  font-family:var(--mono);font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;
+  padding:12px 20px;text-decoration:none;border:1px solid var(--ink);
+  background:var(--ink);color:var(--paper);
+}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn:hover{background:var(--phosphor);border-color:var(--phosphor);color:#fff}
+.btn.ghost:hover{background:var(--phosphor-dim);color:var(--ink);border-color:var(--ink)}
+
+/* ---------- micrograph plate (signature) ---------- */
+.plate{
+  background:var(--panel);
+  border:1px solid var(--ink);
+  padding:14px;
+  box-shadow:6px 6px 0 rgba(23,27,24,.12);
+}
+.plate-head{
+  display:flex;justify-content:space-between;align-items:center;
+  font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--graphite);margin-bottom:10px;gap:10px;flex-wrap:wrap;
+}
+.detector-toggle{display:flex;border:1px solid var(--ink)}
+.detector-toggle button{
+  font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+  background:transparent;border:0;color:var(--graphite);
+  padding:7px 14px;cursor:pointer;
+}
+.detector-toggle button[aria-pressed="true"]{background:var(--ink);color:var(--phosphor-dim)}
+.viewport{position:relative;background:var(--micrograph);overflow:hidden}
+.viewport canvas{display:block;width:100%;height:auto}
+.scalebar{
+  position:absolute;left:14px;bottom:12px;
+  font-family:var(--mono);font-size:10.5px;color:#D9E4DC;letter-spacing:.06em;
+}
+.scalebar .bar{display:block;width:64px;height:3px;background:#D9E4DC;margin-bottom:5px}
+.viewport.abf .scalebar{color:#171B18}
+.viewport.abf .scalebar .bar{background:#171B18}
+.wall-note{
+  position:absolute;right:14px;bottom:12px;
+  font-family:var(--mono);font-size:10.5px;color:var(--amber);letter-spacing:.05em;
+  text-align:right;max-width:190px;line-height:1.5;
+}
+.plate-caption{
+  font-family:var(--mono);font-size:11.5px;line-height:1.7;color:var(--graphite);
+  margin-top:12px;
+}
+.plate-caption b{color:var(--ink);font-weight:600}
+
+/* ---------- sections ---------- */
+section{padding:64px 0}
+.sec-head{margin-bottom:40px}
+h2{
+  font-family:var(--disp);font-weight:700;
+  font-size:clamp(26px,3.4vw,36px);letter-spacing:-.01em;
+  margin-top:14px;line-height:1.1;
+}
+.sec-lede{max-width:62ch;color:#2A2F2B;font-weight:300;font-size:18px;margin-top:12px}
+
+/* pipeline */
+.pipeline{display:grid;grid-template-columns:repeat(5,1fr);border:1px solid var(--ink);background:var(--panel)}
+.stage{padding:22px 18px 24px;border-right:1px solid var(--hairline);position:relative}
+.stage:last-child{border-right:0}
+.stage .k{
+  font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--phosphor);
+  font-weight:600;text-transform:uppercase;
+}
+.stage h3{font-family:var(--disp);font-weight:700;font-size:17px;margin:8px 0 8px}
+.stage p{font-size:14.5px;line-height:1.6;color:var(--graphite)}
+.stage .gate{
+  margin-top:12px;display:inline-block;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;
+  color:var(--amber);border:1px dashed var(--amber);padding:3px 8px;
+}
+
+/* guarantees */
+.guarantees{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--ink);border:1px solid var(--ink)}
+.g{background:var(--paper);padding:26px 22px}
+.g .mono-h{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--phosphor);font-weight:600}
+.g h3{font-family:var(--disp);font-size:18px;font-weight:700;margin:10px 0 8px}
+.g p{font-size:15px;color:var(--graphite);line-height:1.6}
+.g code{font-family:var(--mono);font-size:13px;background:var(--phosphor-dim);padding:1px 5px}
+
+/* protocol sample */
+.proto-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:48px;align-items:start}
+.codeplate{
+  background:var(--micrograph);border:1px solid var(--ink);
+  padding:22px 22px 20px;overflow-x:auto;
+  box-shadow:6px 6px 0 rgba(23,27,24,.12);
+}
+.codeplate pre{
+  font-family:var(--mono);font-size:12.5px;line-height:1.75;color:#C7D4CB;white-space:pre;
+}
+.codeplate .c-key{color:#7FB89B}
+.codeplate .c-str{color:#E8EDE9}
+.codeplate .c-num{color:#D9A15C}
+.codeplate .c-com{color:#5C6A61}
+.proto-notes p{margin-bottom:18px;color:#2A2F2B}
+.proto-notes p b{font-weight:500}
+
+/* lint registry */
+.lints{width:100%;border-collapse:collapse;border:1px solid var(--ink);background:var(--panel);font-size:14px}
+.lints th{
+  font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+  text-align:left;color:var(--graphite);font-weight:600;
+  border-bottom:1px solid var(--ink);padding:10px 14px;background:var(--paper);
+}
+.lints td{border-bottom:1px solid var(--hairline);padding:10px 14px;vertical-align:top;color:#2A2F2B}
+.lints tr:last-child td{border-bottom:0}
+.lints .lid{font-family:var(--mono);font-size:12.5px;font-weight:600;color:var(--phosphor);white-space:nowrap}
+.lints .grp{font-family:var(--mono);font-size:11px;color:var(--graphite);white-space:nowrap}
+.lints .wip .lid{color:var(--amber)}
+.lints .wip td{color:var(--graphite)}
+.badge{font-family:var(--mono);font-size:10px;letter-spacing:.06em;border:1px dashed var(--amber);color:var(--amber);padding:1px 6px;margin-left:8px}
+
+/* evaluation stats */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--ink);border:1px solid var(--ink)}
+@media (max-width:1080px){.stats{grid-template-columns:1fr 1fr}}
+.stat{background:var(--panel);padding:22px 20px}
+.stat .v{font-family:var(--disp);font-weight:800;font-size:34px;letter-spacing:-.02em;line-height:1}
+.stat .v small{font-size:15px;font-weight:600;color:var(--graphite);letter-spacing:0}
+.stat .l{font-family:var(--mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--graphite);margin-top:10px;line-height:1.6}
+.failtax{margin-top:28px;border:1px solid var(--ink);background:var(--panel)}
+.failtax .row{display:grid;grid-template-columns:190px 70px 1fr;gap:18px;padding:14px 18px;border-bottom:1px solid var(--hairline);align-items:baseline}
+.failtax .row:last-child{border-bottom:0}
+.failtax .fid{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--amber)}
+.failtax .fn{font-family:var(--mono);font-size:12px;color:var(--graphite)}
+.failtax .fd{font-size:14px;color:#2A2F2B;line-height:1.6}
+@media (max-width:900px){.stats{grid-template-columns:1fr 1fr}.failtax .row{grid-template-columns:1fr;gap:4px}}
+
+/* control stack */
+.stack{border:1px solid var(--ink);background:var(--micrograph);padding:26px 26px 22px;box-shadow:6px 6px 0 rgba(23,27,24,.12)}
+.stack .layer{
+  display:grid;grid-template-columns:200px 1fr;gap:18px;
+  padding:13px 0;border-bottom:1px dashed #2A342E;align-items:baseline;
+}
+.stack .layer:last-child{border-bottom:0}
+.stack .ln{font-family:var(--mono);font-size:12px;font-weight:600;color:#7FB89B;letter-spacing:.05em;text-transform:uppercase}
+.stack .ld{font-family:var(--mono);font-size:12.5px;color:#C7D4CB;line-height:1.7}
+.stack .ld em{color:#D9A15C;font-style:normal}
+@media (max-width:900px){.stack .layer{grid-template-columns:1fr;gap:4px}}
+
+
+/* ---------- background / motivation ---------- */
+.constraints{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:44px}
+.con{border:1px solid var(--ink);background:var(--panel);padding:24px 22px;position:relative}
+.con .cl{
+  font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--amber);font-weight:600;
+}
+.con h3{font-family:var(--disp);font-size:19px;font-weight:700;margin:10px 0 10px;line-height:1.25}
+.con p{font-size:14.5px;color:var(--graphite);line-height:1.65}
+.con .fig{
+  margin-top:16px;padding-top:12px;border-top:1px solid var(--hairline);
+  font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--ink);
+}
+
+.contrast{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--ink);border:1px solid var(--ink);margin-bottom:40px}
+.side{background:var(--panel);padding:26px 24px}
+.side.bad{background:#F4EFE8}
+.side .hd{
+  font-family:var(--mono);font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+  font-weight:600;margin-bottom:14px;
+}
+.side.bad .hd{color:var(--amber)}
+.side.good .hd{color:var(--phosphor)}
+.side ul{list-style:none;margin:0}
+.side li{
+  font-size:14.5px;line-height:1.6;color:#2A2F2B;
+  padding:9px 0 9px 22px;border-bottom:1px solid var(--hairline);position:relative;
+}
+.side li:last-child{border-bottom:0}
+.side li::before{
+  position:absolute;left:0;top:9px;font-family:var(--mono);font-size:13px;
+}
+.side.bad li::before{content:"×";color:var(--amber)}
+.side.good li::before{content:"→";color:var(--phosphor)}
+
+.thesis{
+  border:1px solid var(--ink);border-left:5px solid var(--phosphor);
+  background:var(--phosphor-dim);padding:26px 28px;
+}
+.thesis p{font-size:19px;font-weight:300;line-height:1.6;color:var(--ink);max-width:70ch}
+.thesis p b{font-weight:500}
+.thesis .attrib{
+  font-family:var(--mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--graphite);margin-top:14px;
+}
+@media (max-width:900px){.constraints,.contrast{grid-template-columns:1fr}}
+
+/* ---------- byline ---------- */
+.byline{
+  border-top:1px solid var(--hairline);
+  margin-top:26px;padding-top:16px;
+  font-family:var(--mono);font-size:11.5px;line-height:1.85;
+  letter-spacing:.03em;color:var(--graphite);
+}
+.byline .ttl{color:var(--ink);font-weight:600;display:block;margin-bottom:6px;letter-spacing:.02em}
+.byline .au{color:var(--ink)}
+
+/* ---------- equations ---------- */
+.eq{
+  position:relative;
+  background:
+    linear-gradient(var(--panel),var(--panel)) padding-box,
+    linear-gradient(180deg,var(--phosphor) 0%,var(--hairline) 55%) border-box;
+  border:1px solid transparent;
+  border-left:3px solid var(--phosphor);
+  margin:30px 0;
+  padding:30px 30px 0;
+}
+.eq::before{
+  content:attr(data-label);
+  position:absolute;top:-8px;left:26px;
+  background:var(--paper);padding:0 9px;
+  font-family:var(--mono);font-size:10px;font-weight:600;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--phosphor);
+}
+.eq::after{
+  content:attr(data-num);
+  position:absolute;top:14px;right:20px;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;
+  color:var(--hairline);
+}
+.eq .expr{
+  display:block;text-align:center;
+  padding:6px 8px 26px;overflow-x:auto;overflow-y:hidden;
+}
+.eq .katex{font-size:1.24em;color:var(--ink)}
+.eq .katex-display{margin:0}
+
+/* legend: symbol | gloss */
+.eq .where{
+  border-top:1px solid var(--hairline);
+  margin:0 -30px;padding:16px 30px 18px;
+  display:grid;grid-template-columns:auto 1fr;
+  gap:9px 20px;align-items:baseline;
+}
+.eq .where dt{
+  font-family:var(--mono);font-size:12px;font-weight:600;
+  color:var(--phosphor);white-space:nowrap;text-align:right;
+}
+.eq .where dd{
+  margin:0;font-family:var(--serif);font-size:14.5px;
+  line-height:1.55;color:var(--graphite);
+}
+.eq .where dd em{font-style:normal;color:var(--ink)}
+.eq .note{
+  border-top:1px solid var(--hairline);
+  margin:0 -30px;padding:15px 30px 17px;
+  font-size:14.5px;line-height:1.6;color:var(--graphite);
+}
+.eq .note b{color:var(--ink);font-weight:500}
+@media (max-width:640px){
+  .eq{padding:28px 20px 0}
+  .eq .where,.eq .note{margin:0 -20px;padding-left:20px;padding-right:20px}
+  .eq .where{grid-template-columns:1fr;gap:2px 0}
+  .eq .where dt{text-align:left}
+  .eq .where dd{margin-bottom:8px}
+  .eq .katex{font-size:1.05em}
+}
+
+/* inline math sits on the text baseline without shouting */
+.katex{font-size:1.03em}
+.mi{font-family:var(--serif);font-style:italic;color:var(--ink)}
+
+/* ---------- schematic plates ---------- */
+.dagplate{
+  background:var(--micrograph);border:1px solid var(--ink);
+  padding:18px 16px 12px;box-shadow:6px 6px 0 rgba(23,27,24,.12);
+  overflow-x:auto;
+}
+.dagplate svg{display:block;min-width:860px;width:100%;height:auto}
+.dagplate.sm svg{min-width:720px}
+.dag-caption{
+  font-family:var(--mono);font-size:11.5px;line-height:1.7;color:var(--graphite);
+  margin:12px 0 44px;padding:0 4px;
+}
+.dag-caption b{color:var(--ink);font-weight:600}
+@media (prefers-reduced-motion:reduce){
+  .dag .pkt{display:none}
+}
+
+.papers{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.paper{
+  border:1px solid var(--ink);background:var(--panel);padding:24px 22px;
+  display:flex;flex-direction:column;min-height:100%;
+}
+.paper .num{font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;color:var(--graphite);text-transform:uppercase}
+.paper .num .st{float:right;color:var(--phosphor);font-weight:600}
+.paper .num .st.gated{color:var(--amber)}
+.paper h3{font-family:var(--disp);font-size:19px;font-weight:700;margin:12px 0 10px;line-height:1.25}
+.paper p{font-size:14.5px;color:var(--graphite);line-height:1.65;flex:1}
+.paper .foot{
+  margin-top:18px;padding-top:12px;border-top:1px solid var(--hairline);
+  font-family:var(--mono);font-size:11px;letter-spacing:.05em;color:var(--graphite);
+}
+
+/* footer */
+footer{border-top:1px solid var(--ink);padding:36px 0 48px;margin-top:24px}
+.foot-grid{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;font-family:var(--mono);font-size:12px;color:var(--graphite);letter-spacing:.04em}
+.foot-grid a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--hairline)}
+.foot-grid a:hover{border-color:var(--phosphor);color:var(--phosphor)}
+
+@media (max-width:900px){
+  .hero-grid,.proto-grid{grid-template-columns:1fr;gap:36px}
+  .pipeline{grid-template-columns:1fr}
+  .stage{border-right:0;border-bottom:1px solid var(--hairline)}
+  .stage:last-child{border-bottom:0}
+  .guarantees,.papers{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap topbar">
+    <a class="back-to-main" href="/" title="Back to Sukriti Manna's site">← Sukriti Manna</a>
+    <a class="wordmark" href="#"><span class="dot"></span>TEM-Scientist</a>
+    <nav class="main" aria-label="Main">
+      <a href="#background">Why</a>
+      <a href="#pipeline">Workflow</a>
+      <a href="#lints">Verification</a>
+      <a href="#eval">Evaluation</a>
+      <a href="#measurement">Measurement</a>
+      <a href="#stack">Stack</a>
+      <a href="#science">Science</a>
+      <a href="#roadmap">Roadmap</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <p class="eyebrow">A platform for autonomous electron microscopy</p>
+      <h1>The model plans.<br>The compiler <span class="green">decides.</span></h1>
+      <p class="lede">TEM-Scientist is an autonomy stack for transmission electron microscopy: experimental goals compile into <strong>typed, statically verified protocols</strong>, rehearsed against a physics-aware digital twin before a single lens current changes. At execution time, no language model is in the loop.</p>
+      <div class="byline">
+        <span class="ttl">Verified Experimental Protocols for Agentic Electron Microscopy</span>
+        <span class="au">Sukriti Manna</span> · <span class="au">Subramanian K. R. S. Sankaranarayanan</span><br>
+        University of Illinois Chicago · Center for Nanoscale Materials, Argonne National Laboratory
+      </div>
+
+      <div class="hero-ctas">
+        <a class="btn" href="#roadmap">Current results</a>
+        <a class="btn ghost" href="#background">Why we're building this</a>
+      </div>
+    </div>
+
+    <figure class="plate" aria-labelledby="plate-cap">
+      <div class="plate-head">
+        <span>Test case · HfO₂ · 180° domain wall</span>
+        <div class="detector-toggle" role="group" aria-label="Detector selection">
+          <button id="btn-haadf" aria-pressed="true">HAADF</button>
+          <button id="btn-abf" aria-pressed="false">ABF / iDPC</button>
+        </div>
+      </div>
+      <div class="viewport">
+        <canvas id="lattice" width="920" height="560" role="img" aria-label="Simulated STEM micrograph of a ferroelectric HfO₂ lattice. In HAADF mode the 180-degree domain wall is nearly invisible; switching to ABF reveals it through the oxygen sublattice."></canvas>
+        <div class="scalebar"><span class="bar"></span>2 nm</div>
+        <div class="wall-note" id="wallNote">wall contrast ≈ 8% — try ABF</div>
+      </div>
+      <figcaption class="plate-caption" id="plate-cap">
+        <b>Fig. 0 · illustrative schematic, not simulation output</b> — Why modality choice has to be reasoned about. Whole classes of structure are invisible to the detector an operator reaches for by default; HAADF intensity scales roughly as \(I \propto Z^{1.7}\), so oxygen is all but mute beside hafnium — here a 180° ferroelectric wall in HfO₂ barely registers, while the oxygen sublattice can give it away in ABF — provided the specimen is on a zone axis where the polarization is not parallel to the beam. Which detector answers the question is a decision worth <b>compiling</b>, not improvising — and it is not specific to this material.
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="background">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="meta-strip"><span class="idx">§01</span><span class="tag">Background</span><span>Why autonomy · why not an agent loop</span></div>
+      <h2>The bottleneck is not the microscope</h2>
+      <p class="sec-lede">An aberration-corrected TEM can resolve individual atomic columns and distinguish oxygen from hafnium. What it cannot do is decide what to look at next. That decision — which region, which modality, which tilt, when to stop — sits with a human expert standing at the console, and it is the scarcest resource in the building.</p>
+    </div>
+
+    <div class="constraints">
+      <div class="con">
+        <span class="cl">Constraint 01</span>
+        <h3>Beam time is rationed</h3>
+        <p>A user facility instrument is booked in shifts and oversubscribed. Alignment, tuning, and search consume much of a session before the first useful image is recorded. Experiments end when the clock runs out, not when the question is answered.</p>
+        <div class="fig">Sessions end on schedule, not on evidence</div>
+      </div>
+      <div class="con">
+        <span class="cl">Constraint 02</span>
+        <h3>Measurement is destructive</h3>
+        <p>The probe that images the specimen also damages it. Knock-on displacement and radiolysis change the very structure under study, so a wasted acquisition is not merely slow — it can spend the sample. There is often no second attempt at the same region.</p>
+        <div class="fig">Dose is a budget you cannot refund</div>
+      </div>
+      <div class="con">
+        <span class="cl">Constraint 03</span>
+        <h3>The method is tacit</h3>
+        <p>Why an operator escalated to ABF, retuned the corrector, or abandoned a particle rarely survives into the methods section. The reasoning stays in the operator's head and the lab notebook, which is why microscopy results are hard to reproduce across instruments and people.</p>
+        <div class="fig">Decisions vanish; only images remain</div>
+      </div>
+    </div>
+
+    <div class="sec-head" style="margin-bottom:24px">
+      <h2 style="font-size:clamp(22px,2.8vw,28px)">Why not simply put an agent at the console?</h2>
+      <p class="sec-lede">Language models are good at exactly the part that is scarce — proposing what to try next. But a stochastic planner in direct control of a multi-million-dollar instrument, aimed at an irreplaceable specimen, fails in ways that matter. The fix is not a better prompt; it is a change in where the model sits.</p>
+    </div>
+
+    <div class="contrast">
+      <div class="side bad">
+        <div class="hd">Agent in the control loop</div>
+        <ul>
+          <li>Actions are sampled at run time, so the same goal can produce different instrument behavior on every attempt</li>
+          <li>A hallucinated command surfaces as a hardware action, with no stage between proposal and lens current</li>
+          <li>Failures are discovered on the specimen, after the dose has already been delivered</li>
+          <li>What ran is reconstructed from a transcript — not an artifact you can diff, hash, or replay</li>
+          <li>Refusal degrades into improvisation: an unanswerable goal still yields <em>something</em></li>
+        </ul>
+      </div>
+      <div class="side good">
+        <div class="hd">Model as compiler front-end</div>
+        <ul>
+          <li>The model emits a protocol, not an action; execution replays that artifact bit-identically</li>
+          <li>Hallucinated primitives and unbound post-conditions are rejected statically, before rehearsal</li>
+          <li>Failures surface in a physics-aware twin, where the only cost is compute</li>
+          <li>Every run is a hashed, schema-validated object, archived beside the data it produced</li>
+          <li>An unsatisfiable goal fails to compile — a refusal with a paper trail, not a plausible substitute</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="thesis">
+      <p><b>The objective is not a microscope that runs itself.</b> It is a microscope whose experiments are written down: compiled from a stated hypothesis, checked before they run, executed identically every time, and archived as artifacts that another lab can read, replay, and disagree with. Autonomy is the means; <b>reproducible experimental method</b> is the end.</p>
+      <p style="font-size:16px;margin-top:16px;color:#2A2F2B">Nothing in that machinery is specific to a material. The protocol schema, the lint suite, the twin, and the escalation policy describe how a TEM experiment is decided, not what it is about — so the same stack should serve interface chemistry, defect populations, in-situ dynamics, and beam-sensitive specimens. Ferroelectric HfO₂ is the test case we develop against because it is unforgiving: the structure of interest is nearly invisible to the modality an operator would reach for first.</p>
+      <div class="attrib">Design thesis · TEM-Scientist</div>
+    </div>
+  </div>
+</section>
+
+<section id="pipeline">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="meta-strip"><span class="idx">§02</span><span class="tag">Architecture</span><span>Compile → Verify → Rehearse → Execute → Reflect</span></div>
+      <h2>A compiler pipeline, not a chat loop</h2>
+      <p class="sec-lede">Every experiment passes through five stages. The language model contributes at the ends — compiling goals and reflecting on outcomes. The middle is deterministic machinery.</p>
+    </div>
+
+    <figure class="dagplate">
+      <svg class="dag" viewBox="0 0 1000 430" role="img" aria-label="TEM-Scientist workflow: a natural-language goal is compiled by a language model into a typed protocol, which passes through the lint gate and TWIN rehearsal before deterministic execution on the Spectra 300. Rejections loop back to the compiler or terminate as refusals with a paper trail; ledgers and traces feed a reflect stage that proposes the next goal or a modality escalation. A shaded boundary marks where model involvement ends.">
+        <defs>
+          <marker id="mG" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#7FB89B"/></marker>
+          <marker id="mA" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#D9A15C"/></marker>
+          <marker id="mB" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#6E93B5"/></marker>
+        </defs>
+        <style>
+          .dag .bx{fill:#141A16;stroke:#3A463E;rx:3}
+          .dag .bx-model{stroke:#6E93B5}
+          .dag .bx-gate{stroke:#D9A15C}
+          .dag .bx-hw{stroke:#7FB89B}
+          .dag .nm{fill:#E8EDE9;font:600 13px 'Archivo',sans-serif}
+          .dag .sb{fill:#7C8A80;font:400 10px 'IBM Plex Mono',monospace}
+          .dag .hi{fill:#7FB89B;font:600 10px 'IBM Plex Mono',monospace}
+          .dag .am{fill:#D9A15C;font:400 10px 'IBM Plex Mono',monospace}
+          .dag .bl{fill:#6E93B5;font:400 10px 'IBM Plex Mono',monospace}
+          .dag .lG{stroke:#7FB89B;stroke-width:1.5;fill:none;marker-end:url(#mG)}
+          .dag .lA{stroke:#D9A15C;stroke-width:1.5;fill:none;marker-end:url(#mA)}
+          .dag .lB{stroke:#6E93B5;stroke-width:1.5;fill:none;stroke-dasharray:5 4;marker-end:url(#mB)}
+          .dag .zone{fill:none;stroke:#2A342E;stroke-dasharray:3 5}
+          .dag .zl{fill:#5C6A61;font:600 9.5px 'IBM Plex Mono',monospace;letter-spacing:.12em}
+          .dag .pkt{fill:#7FB89B}
+        </style>
+
+        <!-- zones -->
+        <rect class="zone" x="16" y="52" width="330" height="200"/>
+        <text class="zl" x="26" y="42">MODEL IN THE LOOP · COMPILE-TIME</text>
+        <rect class="zone" x="366" y="52" width="618" height="200"/>
+        <text class="zl" x="376" y="42">NO MODEL · DETERMINISTIC MACHINERY</text>
+
+        <!-- goal -->
+        <rect class="bx bx-model" x="32" y="80" width="140" height="58"/>
+        <text class="nm" x="46" y="104">Goal G</text>
+        <text class="sb" x="46" y="122">natural language</text>
+        <path class="lG" d="M172 109 L200 109"/>
+
+        <!-- compiler -->
+        <rect class="bx bx-model" x="204" y="80" width="122" height="58"/>
+        <text class="nm" x="218" y="104">Compiler</text>
+        <text class="bl" x="218" y="122">LLM · k samples</text>
+        <path class="lG" d="M326 109 L392 109"/>
+        <text class="sb" x="330" y="100">π : typed FSM</text>
+
+        <!-- lint gate -->
+        <rect class="bx bx-gate" x="396" y="80" width="128" height="58"/>
+        <text class="nm" x="410" y="104">Lint gate</text>
+        <text class="am" x="410" y="122">L1–L15 · static</text>
+        <path class="lG" d="M524 109 L586 109"/>
+        <text class="hi" x="528" y="100">admit</text>
+
+        <!-- TWIN -->
+        <rect class="bx bx-gate" x="590" y="80" width="132" height="58"/>
+        <text class="nm" x="604" y="104">TWIN</text>
+        <text class="sb" x="604" y="122">physics rehearsal</text>
+        <path class="lG" d="M722 109 L782 109"/>
+        <text class="hi" x="726" y="100">pass</text>
+
+        <!-- runtime -->
+        <rect class="bx bx-hw" x="786" y="80" width="182" height="58"/>
+        <text class="nm" x="800" y="104">Runtime → Spectra 300</text>
+        <text class="sb" x="800" y="118">FSM interpreter · ledger</text>
+        <text class="hi" x="800" y="131">invariants below MCP</text>
+
+        <!-- reject loops -->
+        <path class="lA" d="M460 138 L460 190 L344 190 L344 142"/>
+        <text class="am" x="352" y="182">reject: recompile (bounded)</text>
+        <path class="lA" d="M656 138 L656 216 L316 216 L316 142"/>
+        <text class="am" x="470" y="234">rehearsal fault → diagnosis → recompile</text>
+
+        <!-- refusal terminal -->
+        <rect class="bx bx-gate" x="396" y="284" width="230" height="50"/>
+        <text class="nm" x="410" y="305">Refuse</text>
+        <text class="am" x="410" y="322">unsatisfiable contract · paper trail</text>
+        <path class="lA" d="M424 138 L424 284"/>
+        <text class="am" x="260" y="270">UNSAT</text>
+
+        <!-- reflect loop -->
+        <rect class="bx bx-model" x="700" y="284" width="268" height="50"/>
+        <text class="nm" x="714" y="305">Reflect</text>
+        <text class="bl" x="714" y="322">headroom · next G · modality escalation</text>
+        <path class="lG" d="M877 138 L877 284"/>
+        <text class="sb" x="885" y="220">traces + ledger</text>
+        <path class="lB" d="M700 309 L102 309 L102 138"/>
+        <text class="bl" x="112" y="300">↻ next hypothesis</text>
+
+        <!-- floor note -->
+        <text class="sb" x="32" y="386">objective_contract_hash binds π to G · admitted protocols select actions reproducibly · diversity is compile-time only (d̄ = 0.315)</text>
+        <text class="sb" x="32" y="406">reject/refuse paths are outcomes, not errors: every terminal state leaves an auditable artifact</text>
+
+        <!-- travelling packet along the happy path -->
+        <circle class="pkt" r="3">
+          <animateMotion dur="8s" repeatCount="indefinite"
+            path="M172 109 L200 109 L326 109 L392 109 L524 109 L586 109 L722 109 L782 109"/>
+        </circle>
+      </svg>
+    </figure>
+    <p class="dag-caption"><b>Fig. 1 — The compile–rehearse–execute–reflect loop.</b> Model involvement (blue-bordered boxes) is confined to compilation and reflection. Everything between the lint gate and the instrument is deterministic: amber paths are rejections that either recompile with bounded diagnosis or terminate as an auditable refusal; the green path is the only route to hardware.</p>
+
+    <div class="pipeline">
+      <div class="stage">
+        <span class="k">Stage 1</span>
+        <h3>Compile</h3>
+        <p>A natural-language goal is compiled into a typed protocol: a finite state machine over a closed vocabulary of safe microscope primitives, each step carrying explicit pre-conditions and ledger-keyed post-conditions, plus an objective contract binding the protocol to the goal.</p>
+      </div>
+      <div class="stage">
+        <span class="k">Stage 2</span>
+        <h3>Verify</h3>
+        <p>Three layers: schema conformance against <code style="font-family:var(--mono);font-size:12px">protocol.schema.json</code>, static lints over the FSM, and an immutable objective contract with fidelity checks C1–C6 / D1–D3. Hallucinated primitives, non-ledger post-condition keys, and non-terminating states are rejected before rehearsal.</p>
+        <span class="gate">L1–L15 landed · L16–L17 queued</span>
+      </div>
+      <div class="stage">
+        <span class="k">Stage 3</span>
+        <h3>Rehearse</h3>
+        <p>The full protocol runs against TWIN, a physics-aware behavioral simulator of the target instrument. Sensitivity and specificity of the gate are characterized by mutation testing: 11 fault classes plus 2 control classes injected into admitted protocols.</p>
+        <span class="gate">TWIN · 11+2 mutation classes</span>
+      </div>
+      <div class="stage">
+        <span class="k">Stage 4</span>
+        <h3>Execute</h3>
+        <p>The verified protocol runs deterministically with zero model involvement. Safety invariants are enforced below the MCP layer, in the runtime itself — an unsafe action is unrepresentable, not merely discouraged.</p>
+      </div>
+      <div class="stage">
+        <span class="k">Stage 5</span>
+        <h3>Reflect</h3>
+        <p>Execution traces are persisted and fed back for headroom analysis: which obligations were discharged, which post-conditions failed, and whether the next protocol should escalate modality or refuse.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="lints">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="meta-strip"><span class="idx">§03</span><span class="tag">Static verification</span><span>Lint registry · schema-coupled · CI-enforced</span></div>
+      <h2>The lint gate</h2>
+      <p class="sec-lede">Every compiled protocol must clear the full lint suite before it may touch TWIN, let alone hardware. Manuscript examples are held to the same standard: CI extracts every <span style="font-family:var(--mono);font-size:14px">lstlisting[style=proto]</span> block from the paper's sources and validates it against the published schema.</p>
+    </div>
+    <div class="eq" data-label="Admission" data-num="EQ 1">
+      <span class="expr">$$\mathrm{Admit}(\pi)
+      \;\iff\;
+      \underbrace{\bigwedge_{i=1}^{15} L_i(\pi)}_{\textsf{static}}
+      \;\;\wedge\;\;
+      \underbrace{\mathrm{TWIN}(\pi) \models \mathcal{C}(G)}_{\textsf{rehearsed}}$$</span>
+      <p class="note">For a compiled protocol <span class="mi">π</span>: a <b>conjunction, not a score.</b> One failing lint or one unmet contract clause blocks the protocol outright — there is no partial credit, no confidence threshold, and no override path from a rejected protocol to the instrument.</p>
+    </div>
+
+    <table class="lints">
+      <thead><tr><th>Lint</th><th>Class</th><th>Rejects</th></tr></thead>
+      <tbody>
+        <tr><td class="lid">L1–L4</td><td class="grp">Structural</td><td>Schema violations: missing required fields (including <span style="font-family:var(--mono);font-size:12.5px">objective_contract_hash</span>), malformed state ids, dangling transitions, unreachable states.</td></tr>
+        <tr><td class="lid">L5–L8</td><td class="grp">Semantic</td><td>Type errors on primitive arguments, out-of-range setpoints, pre-conditions that no reachable predecessor can establish.</td></tr>
+        <tr><td class="lid">L9–L11</td><td class="grp">Safety / termination</td><td>Missing terminal obligations — e.g. a tilt series that never returns the stage to zero — plus a restricted expression grammar (L10) and parameter binding (L11) that close off free-form computation in protocol bodies.</td></tr>
+        <tr><td class="lid">L12–L15</td><td class="grp">Contract grounding</td><td>Grounds the objective contract itself: rejects references to non-existent primitives and post-condition keys absent from the ledger. Applied statically to frozen contracts — no execution required — it flags every task that failed, plus three that passed, revealing the defect to be more widespread than the score suggested.</td></tr>
+        <tr class="wip"><td class="lid">L16–L17<span class="badge">Queued</span></td><td class="grp">Setpoints &amp; obligations</td><td>Validates setpoints against the instrument profile (L16) and counts obligations discharged against those declared (L17) — the latter aimed squarely at silent substitution, where a requirement is dropped rather than reported unsatisfiable.</td></tr>
+        <tr><td class="lid">L19</td><td class="grp">Value ranges</td><td>Closes the blind spot the fault study exposed: the gate checked structure and identifiers but never magnitudes, so a well-formed, correctly-named, physically wrong setpoint passed. Held-out fault detection with L19 in place rises from 33/38 to <b>38/38</b> — the escapes were all value errors.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="guarantees">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="meta-strip"><span class="idx">§04</span><span class="tag">Guarantees</span><span>What holds by construction</span></div>
+      <h2>Autonomy you can audit</h2>
+    </div>
+    <div class="guarantees">
+      <div class="g">
+        <span class="mono-h">Determinism</span>
+        <h3>Deterministic action selection</h3>
+        <p>Diversity lives at compile time and stops there: 27 of 31 goals compile to structurally distinct protocols (mean distance 0.315), yet all 30 admitted protocols select actions reproducibly. We state this as <em>deterministic action selection</em> rather than "execution determinism" — fixed-seed traces are identical partly by construction, and the honest test is behavior under seed sweeps, observation replay, and perturbation near contingency thresholds.</p>
+      </div>
+      <div class="g">
+        <span class="mono-h">Verification</span>
+        <h3>Schema-coupled by CI</h3>
+        <p>Every protocol validates against <code>protocol.schema.json</code>, including a required objective-contract hash. Even the manuscript's examples are extracted and validated in CI, so the paper can't drift from the system.</p>
+      </div>
+      <div class="g">
+        <span class="mono-h">Evaluation</span>
+        <h3>Locked, pre-registered, honest</h3>
+        <p>Repairs are predicted before they are applied and reported whichever way they move. When the contract repair raised the locked score but broke a refusal, we published the lower figure — the pipeline's own unmodified output would have read higher and hidden it. Four defects in the scoring apparatus are documented, alongside an ablation showing that removing the contract layer <em>raises</em> the measured score — reported rather than quietly banked.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="protocols">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="meta-strip"><span class="idx">§05</span><span class="tag">Protocols</span><span>Typed FSMs · deterministic runtime · refusable</span></div>
+      <h2>Protocols are the unit of trust</h2>
+    </div>
+    <div class="proto-grid">
+      <div class="proto-notes">
+        <p>A protocol is not a transcript of model output — it is a <b>compiled program</b>: a finite state machine over a closed primitive vocabulary, with pre- and post-conditions stated over the instrument ledger.</p>
+
+        <div class="eq" data-label="The protocol object" data-num="EQ 2">
+          <span class="expr">$$\pi \;=\; \bigl(\,S,\; s_0,\; \delta,\; \mathrm{Pre},\; \mathrm{Post},\; h\,\bigr)
+          \qquad \delta \,:\, S \times \Sigma \longrightarrow S$$</span>
+          <dl class="where">
+            <dt>Σ</dt><dd>the <em>closed</em> vocabulary of instrument primitives — nothing outside it is expressible</dd>
+            <dt>Pre, Post</dt><dd>predicates over instrument ledger keys, checked before and after every state</dd>
+            <dt>h</dt><dd><em>objective_contract_hash</em> — binds this protocol irreversibly to the goal it was compiled from</dd>
+          </dl>
+        </div>
+        <p>Diversity is a compile-time property; reproducibility is a runtime one. Across 31 goals, 27 compile to structurally distinct FSMs (mean pairwise sequence distance 0.315) that all pass their checkers — while all 30 admitted protocols select actions <b>reproducibly</b> on replay. Many valid programs, one behavior each.</p>
+        <p>Goals that cannot be satisfied safely don't degrade into improvisation. They <b>fail to compile</b>, or the objective contract — bound to the protocol by a required <span style="font-family:var(--mono);font-size:14px">objective_contract_hash</span> — is rejected by the verifier: a refusal with a paper trail.</p>
+        <p>Because protocols are data, they can be diffed, hashed, replayed against the twin, and archived beside the micrographs they produced.</p>
+      </div>
+      <figure class="codeplate" aria-label="Example protocol excerpt">
+<pre><span class="c-com">// excerpt — validated against protocol.schema.json</span>
+{
+  <span class="c-key">"objective_contract_hash"</span>: <span class="c-str">"a41f…9c2e"</span>,
+  <span class="c-key">"states"</span>: [
+    { <span class="c-key">"id"</span>: <span class="c-str">"S1_SET_MODALITY"</span>,
+      <span class="c-key">"primitive"</span>: <span class="c-str">"detector.select"</span>,
+      <span class="c-key">"args"</span>: { <span class="c-key">"detector"</span>: <span class="c-str">"ABF"</span> },
+      <span class="c-key">"post"</span>: { <span class="c-key">"ledger.detector"</span>: <span class="c-str">"ABF"</span> } },
+
+    { <span class="c-key">"id"</span>: <span class="c-str">"S2_TILT_SERIES"</span>,
+      <span class="c-key">"primitive"</span>: <span class="c-str">"stage.tilt_alpha"</span>,
+      <span class="c-key">"args"</span>: { <span class="c-key">"deg"</span>: <span class="c-num">-15.0</span> },
+      <span class="c-key">"pre"</span>:  { <span class="c-key">"ledger.holder"</span>: <span class="c-str">"double_tilt"</span> },
+      <span class="c-key">"post"</span>: { <span class="c-key">"ledger.alpha_deg"</span>: <span class="c-num">-15.0</span> } },
+
+    { <span class="c-key">"id"</span>: <span class="c-str">"S9_RETURN_ZERO"</span>,
+      <span class="c-key">"primitive"</span>: <span class="c-str">"stage.tilt_alpha"</span>,
+      <span class="c-key">"args"</span>: { <span class="c-key">"deg"</span>: <span class="c-num">0.0</span> },
+      <span class="c-key">"post"</span>: { <span class="c-key">"ledger.alpha_deg"</span>: <span class="c-num">0.0</span> } }
+  ]
+}</pre>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section id="eval">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="meta-strip"><span class="idx">§06</span><span class="tag">Locked evaluation</span><span>10 held-out tasks × 5 repeats · checker-first · prompt-freeze-v1</span></div>
+      <h2>Measured, not vibes</h2>
+      <p class="sec-lede">The held-out unit is the <em>task</em>, not the attempt: 10 locked tasks with checkers authored before the system was frozen, run 5× each. Statistics are reported clustered — treating repeats as independent overstates precision by nearly 2× (cluster-bootstrap 0.34–0.88 against Clopper–Pearson 0.47–0.75). Bugs found in frozen artifacts are recorded rather than patched mid-run, and where a correction had to be made by hand, both the corrected and uncorrected runs are published with per-row reasons.</p>
+    </div>
+    <table class="lints" style="margin-bottom:28px">
+      <thead><tr><th>Measurement</th><th>Result</th><th>What it is evidence of</th></tr></thead>
+      <tbody>
+        <tr><td>Locked suite, frozen</td><td class="lid">31 / 50</td><td>Held-out performance under <span style="font-family:var(--mono);font-size:12.5px">prompt-freeze-v1</span>, checkers written before the freeze</td></tr>
+        <tr><td>Locked suite, after pre-registered repair</td><td class="lid">37 / 50</td><td>A predicted repair, reported with the regression it caused rather than net of it</td></tr>
+        <tr><td>Development set</td><td class="lid">65 / 74</td><td>Iteration performance only — the compiler was built against these, so this is not generalization</td></tr>
+        <tr><td>Held-out fault detection</td><td class="lid">33 → 38 / 38</td><td>Injected faults the gate catches, before and after the L19 value-range lint</td></tr>
+        <tr><td>Ablation · rehearsal removed</td><td class="lid">37 → 29</td><td>Rehearsal repairs protocols that would otherwise fail — vindicated by the metric</td></tr>
+        <tr><td>Ablation · contract layer removed</td><td class="lid">37 → 39</td><td>The layer rejects protocols the checkers would have passed — justified against the metric</td></tr>
+        <tr><td>Between-task ICC</td><td class="lid">0.77</td><td>Outcomes cluster by task, so the task is the unit and the clustered interval is the honest one</td></tr>
+        <tr><td>Compile-side diversity</td><td class="lid">27 / 31 · d̄ 0.315</td><td>Distinct protocols per goal at compile time <em>(measured pre-repair)</em></td></tr>
+        <tr class="wip"><td>Benchmark v1 coverage<span class="badge">Catalog</span></td><td class="lid">114 tasks</td><td>Thirteen families spanning the instrument's workflows — the population the locked suites sample from</td></tr>
+      </tbody>
+    </table>
+
+    <div class="stats">
+      <div class="stat"><div class="v">31→37<small>/50</small></div><div class="l">Locked suite, before → after the contract-grounding repair, against a pre-registered prediction</div></div>
+      <div class="stat"><div class="v">42<small>/50</small></div><div class="l">What the unmodified pipeline would have reported — the higher number concealed a regression</div></div>
+      <div class="stat"><div class="v">0.77</div><div class="l">Between-task ICC · outcomes cluster hard by task, so any aggregate hides the real structure</div></div>
+      <div class="stat"><div class="v">3.2×10<small>⁵</small></div><div class="l">Gap between reflex response (6.6 µs median) and compile latency (2,114 ms median)</div></div>
+    </div>
+    <p class="dag-caption" style="margin:20px 0 0"><b>The aggregate is the least interesting number here.</b> Pre-repair performance was bimodal (ICC 0.77): five tasks at 5/5, three at 0/5, two in between — and all 15 unsatisfiable-contract failures fell inside exactly those three never-solved tasks. That turned the repair into a falsifiable prediction about <em>which</em> tasks should move, registered before it was applied.</p>
+
+    <div class="thesis" style="margin:28px 0 0">
+      <p><b>The prediction held — and cost us something.</b> The root cause was a one-line asymmetry: the protocol stage received tool contracts, the contract stage did not. Supplying them raised the locked suite from 31/50 to 37/50 and recovered most of the predicted failures. But the same repair converted one correct refusal into a <b>silent substitution</b>: rather than reporting a requirement it could no longer express as unsatisfiable, the compiler quietly dropped it. Those five compilations score as failures — and no longer by hand: outcome classification is now automated over typed compile outcomes, so the 37/50 is reproducible from the artifacts rather than adjudicated by the authors.</p>
+      <p style="font-size:16px;margin-top:16px;color:#2A2F2B">Run end to end on the original harness, the pipeline would have reported <b>42/50</b> and concealed the regression. We publish 37/50 and both runs. The correction began as a manual edit — an uncomfortable position for a paper arguing that measurement layers need scrutiny — which is precisely why it was replaced by typed outcome classification that any reader can re-run.</p>
+      <div class="attrib">Pre-registered repair · locked suite v1</div>
+    </div>
+
+    <figure class="dagplate sm" style="margin-top:28px">
+      <svg class="dag" viewBox="0 0 880 250" role="img" aria-label="Waterfall of the locked score through the contract repair. Starting at 31 of 50, the repair recovers 11 attempts and loses 5 to a regression on the refusal task, finishing at 37 of 50. The unmodified harness would have reported 42 of 50 by not counting the regression.">
+        <style>
+          .dag .barb{fill:#2A342E}
+          .dag .barp{fill:#7FB89B}
+          .dag .barn{fill:#D9A15C}
+          .dag .barg{fill:#4A5850}
+          .dag .conn{stroke:#4A5850;stroke-width:1;stroke-dasharray:3 3}
+          .dag .val{fill:#E8EDE9;font:700 15px 'Archivo',sans-serif}
+        </style>
+        <text class="axl" x="24" y="26">LOCKED SUITE · ATTEMPTS PASSED OF 50</text>
+
+        <!-- baseline scale: y=190 is 0, 3.2px per attempt -->
+        <line class="conn" x1="24" y1="190" x2="856" y2="190"/>
+
+        <!-- 31 frozen -->
+        <rect class="barb" x="60" y="91" width="96" height="99"/>
+        <text class="val" x="60" y="82">31</text>
+        <text class="sb" x="60" y="208">frozen result</text>
+        <text class="sb" x="60" y="224">pre-repair</text>
+        <line class="conn" x1="156" y1="91" x2="236" y2="91"/>
+
+        <!-- +11 recovered -->
+        <rect class="barp" x="236" y="56" width="96" height="35"/>
+        <text class="val" x="236" y="47">+11</text>
+        <text class="hi" x="236" y="208">recovered by</text>
+        <text class="hi" x="236" y="224">contract repair</text>
+        <line class="conn" x1="332" y1="56" x2="412" y2="56"/>
+
+        <!-- -5 regression -->
+        <rect class="barn" x="412" y="56" width="96" height="16"/>
+        <text class="val" x="412" y="47">−5</text>
+        <text class="am" x="412" y="208">regression:</text>
+        <text class="am" x="412" y="224">silent substitution</text>
+        <line class="conn" x1="508" y1="72" x2="588" y2="72"/>
+
+        <!-- 37 reported -->
+        <rect class="barp" x="588" y="72" width="96" height="118"/>
+        <text class="val" x="588" y="63">37</text>
+        <text class="hi" x="588" y="208">reported</text>
+        <text class="sb" x="588" y="224">automated scoring</text>
+
+        <!-- 42 ghost -->
+        <rect class="barg" x="740" y="56" width="96" height="134" opacity=".45"/>
+        <text class="val" x="740" y="47" opacity=".55">42</text>
+        <text class="sb" x="740" y="208">hand-adjudicated,</text>
+        <text class="sb" x="740" y="224">before automation</text>
+      </svg>
+    </figure>
+    <p class="dag-caption"><b>Fig. 5 — The repair, decomposed.</b> The headline moved six attempts, but the movement is not six of anything: eleven attempts were recovered by grounding the contract stage, and five were lost when the same change converted a correct refusal into a silent substitution. The greyed bar is the hand-adjudicated figure that preceded automation: typed compile outcomes and a cached-admission check replaced author judgement, and the number went <em>down</em>.</p>
+
+    <div class="eq" data-label="Where the variance lives" data-num="EQ 3">
+      <span class="expr">$$\mathrm{ICC} \;=\; \frac{\sigma^{2}_{\textsf{task}}}{\sigma^{2}_{\textsf{task}} + \sigma^{2}_{\textsf{rep}}} \;=\; 0.77$$</span>
+      <p class="note">Three quarters of the variance sits <b>between tasks</b>, not between repeats of the same task. A task the system can do, it does every time; one it cannot, it never does. So the held-out unit is the task, and the clustered interval <b>0.34–0.88</b> is the honest one — the attempt-level 0.47–0.75 is narrower only because it pretends fifty attempts are fifty independent trials.</p>
+    </div>
+
+    <figure class="dagplate sm">
+      <svg class="dag" viewBox="0 0 880 320" role="img" aria-label="Outcome distribution across the ten locked tasks before repair. Five tasks succeed in all five repeats, three tasks fail in all five, and two land in between at three of five. Outcomes cluster at the extremes rather than spreading around the mean.">
+        <style>
+          .dag .cell-y{fill:#7FB89B}
+          .dag .cell-n{fill:none;stroke:#4A5850;stroke-width:1.2}
+          .dag .axl{fill:#5C6A61;font:600 9.5px 'IBM Plex Mono',monospace;letter-spacing:.12em}
+          .dag .band{fill:#7FB89B;opacity:.05}
+          .dag .mean{stroke:#D9A15C;stroke-width:1.3;stroke-dasharray:5 4}
+        </style>
+        <text class="axl" x="24" y="26">TEN LOCKED TASKS · FIVE REPEATS EACH · PRE-REPAIR</text>
+
+        <rect class="band" x="130" y="44" width="350" height="100"/>
+        <text class="sb" x="24" y="82">solved 5 / 5</text>
+        <text class="hi" x="24" y="100">5 tasks</text>
+        <text class="sb" x="24" y="192">solved 3 / 5</text>
+        <text class="sb" x="24" y="210">2 tasks</text>
+        <text class="sb" x="24" y="268">solved 0 / 5</text>
+        <text class="am" x="24" y="286">3 tasks</text>
+
+        <g id="rows">
+          <rect class="cell-y" x="140" y="52" width="26" height="14" rx="2"/>
+          <rect class="cell-y" x="174" y="52" width="26" height="14" rx="2"/>
+          <rect class="cell-y" x="208" y="52" width="26" height="14" rx="2"/>
+          <rect class="cell-y" x="242" y="52" width="26" height="14" rx="2"/>
+          <rect class="cell-y" x="276" y="52" width="26" height="14" rx="2"/>
+          <rect class="cell-y" x="140" y="72" width="26" height="14" rx="2"/>
+          <rect class="cell-y" x="174" y="72" width="26" height="14" rx="2"/>
+          <rect class="cell-y" x="208" y="72" width="26" height="14" rx="2"/>
+          <rect class="cell-y" x="242" y="72" width="26" height="14" rx="2"/>
+          <rect class="cell-y" x="276" y="72" width="26" height="14" rx="2"/>
+          <rect class="cell-y" x="140" y="92" width="26" height="14" rx="2"/>
+          <rect class="cell-y" x="174" y="92" width="26" height="14" rx="2"/>
+          <rect class="cell-y" x="208" y="92" width="26" height="14" rx="2"/>
+          <rect class="cell-y" x="242" y="92" width="26" height="14" rx="2"/>
+          <rect class="cell-y" x="276" y="92" width="26" height="14" rx="2"/>
+          <rect class="cell-y" x="140" y="112" width="26" height="14" rx="2"/>
+          <rect class="cell-y" x="174" y="112" width="26" height="14" rx="2"/>
+          <rect class="cell-y" x="208" y="112" width="26" height="14" rx="2"/>
+          <rect class="cell-y" x="242" y="112" width="26" height="14" rx="2"/>
+          <rect class="cell-y" x="276" y="112" width="26" height="14" rx="2"/>
+          <rect class="cell-y" x="140" y="132" width="26" height="14" rx="2"/>
+          <rect class="cell-y" x="174" y="132" width="26" height="14" rx="2"/>
+          <rect class="cell-y" x="208" y="132" width="26" height="14" rx="2"/>
+          <rect class="cell-y" x="242" y="132" width="26" height="14" rx="2"/>
+          <rect class="cell-y" x="276" y="132" width="26" height="14" rx="2"/>
+          <rect class="cell-y" x="140" y="174" width="26" height="14" rx="2"/>
+          <rect class="cell-y" x="174" y="174" width="26" height="14" rx="2"/>
+          <rect class="cell-y" x="208" y="174" width="26" height="14" rx="2"/>
+          <rect class="cell-n" x="242" y="174" width="26" height="14" rx="2"/>
+          <rect class="cell-n" x="276" y="174" width="26" height="14" rx="2"/>
+          <rect class="cell-y" x="140" y="194" width="26" height="14" rx="2"/>
+          <rect class="cell-y" x="174" y="194" width="26" height="14" rx="2"/>
+          <rect class="cell-y" x="208" y="194" width="26" height="14" rx="2"/>
+          <rect class="cell-n" x="242" y="194" width="26" height="14" rx="2"/>
+          <rect class="cell-n" x="276" y="194" width="26" height="14" rx="2"/>
+          <rect class="cell-n" x="140" y="236" width="26" height="14" rx="2"/>
+          <rect class="cell-n" x="174" y="236" width="26" height="14" rx="2"/>
+          <rect class="cell-n" x="208" y="236" width="26" height="14" rx="2"/>
+          <rect class="cell-n" x="242" y="236" width="26" height="14" rx="2"/>
+          <rect class="cell-n" x="276" y="236" width="26" height="14" rx="2"/>
+          <rect class="cell-n" x="140" y="256" width="26" height="14" rx="2"/>
+          <rect class="cell-n" x="174" y="256" width="26" height="14" rx="2"/>
+          <rect class="cell-n" x="208" y="256" width="26" height="14" rx="2"/>
+          <rect class="cell-n" x="242" y="256" width="26" height="14" rx="2"/>
+          <rect class="cell-n" x="276" y="256" width="26" height="14" rx="2"/>
+          <rect class="cell-n" x="140" y="276" width="26" height="14" rx="2"/>
+          <rect class="cell-n" x="174" y="276" width="26" height="14" rx="2"/>
+          <rect class="cell-n" x="208" y="276" width="26" height="14" rx="2"/>
+          <rect class="cell-n" x="242" y="276" width="26" height="14" rx="2"/>
+          <rect class="cell-n" x="276" y="276" width="26" height="14" rx="2"/>
+        </g>
+
+        <line class="mean" x1="516" y1="44" x2="516" y2="300"/>
+        <text class="am" x="530" y="60">mean = 3.1 / 5</text>
+        <text class="sb" x="530" y="78">— a value almost no</text>
+        <text class="sb" x="530" y="94">task actually takes</text>
+        <text class="hi" x="530" y="130">all 15 unsatisfiable-</text>
+        <text class="hi" x="530" y="146">contract failures fall</text>
+        <text class="hi" x="530" y="162">inside the bottom band</text>
+        <text class="sb" x="530" y="200">which is what made the</text>
+        <text class="sb" x="530" y="216">repair a prediction rather</text>
+        <text class="sb" x="530" y="232">than a hope</text>
+      </svg>
+    </figure>
+    <p class="dag-caption"><b>Fig. 4 — Outcomes cluster, they do not spread.</b> Each row is one locked task, each square one repeat. The distribution is bimodal (ICC 0.77): the system solves a task every time or never, and the aggregate lands on a value almost no individual task takes. Reporting 62% alone would describe a system that behaves nothing like this one.</p>
+
+    <div class="failtax" aria-label="Failure taxonomy">
+      <div class="row">
+        <span class="fid">Unsatisfiable contract</span><span class="fn">repaired</span>
+        <span class="fd">Was the dominant mode (n = 15), fully concentrated in the three never-solved tasks: the contract stage referenced primitives that do not exist and post-condition keys absent from the ledger. The static check derived from the diagnosis flags every task that failed <em>and three that did not</em> — the defect was more prevalent than the failure rate revealed.</span>
+      </div>
+      <div class="row">
+        <span class="fid">Silent substitution</span><span class="fn">post-repair</span>
+        <span class="fd">Surfaced beneath the repair: a requirement that can no longer be expressed is dropped rather than reported unsatisfiable. The failure is not that the system did the wrong thing — it is that it did something reasonable without saying it had stopped doing what was asked. Target of L17 obligation counting.</span>
+      </div>
+      <div class="row">
+        <span class="fid">Dropped obligations</span><span class="fn">LK03 · LK06</span>
+        <span class="fd">Fidelity failures — protocols that are safe but do not achieve the stated goal. Terminal obligations go undischarged: a tilt series omits its negative branch and never returns the stage to zero.</span>
+      </div>
+      <div class="row">
+        <span class="fid">Refusal evasion by search</span><span class="fn">LK08</span>
+        <span class="fd">The compiler enumerates parameter space instead of checking the request against the instrument profile — a four-iteration bounded search terminating at the instrument maximum. The clearest instance in the dataset of <em>safe is not faithful</em>, and the task where the contract repair later regressed.</span>
+      </div>
+    </div>
+
+    <table class="lints" style="margin-top:36px">
+      <thead><tr><th>Suite</th><th>Size</th><th>Role</th></tr></thead>
+      <tbody>
+        <tr><td class="lid">Benchmark v1</td><td class="grp">114 tasks · families A–M</td><td>The full catalog: state queries, illumination and optics, focus and eucentricity, navigation and montage, acquisition, tilt series and tomography, low-dose workflows, diffraction and 4D-STEM, spectroscopy, contingency handling, metadata, safety and refusal, cathodoluminescence.</td></tr>
+        <tr><td class="lid">Development</td><td class="grp">65/74 attempts</td><td>Open iteration set — not evidence of generalization. The previously reported 39/39 came from a hand-maintained inline table that had drifted from reality; it is replaced by a figure regenerated from a dated, archived sweep that anyone can re-run.</td></tr>
+        <tr><td class="lid">Locked v1</td><td class="grp">10 tasks × 5 repeats</td><td>Held out under <span style="font-family:var(--mono);font-size:12.5px">prompt-freeze-v1</span> with checkers authored before the freeze. 31/50 frozen, 37/50 after the pre-registered repair. Reported above.</td></tr>
+        <tr class="wip"><td class="lid">Locked v2<span class="badge">Next</span></td><td class="grp">fresh, checker-first</td><td>Once v1's failure modes are known it is no longer held out. Contracts are repaired and v1 has been re-run as a regression result; what remains is to author and freeze a fresh v2. Only v2 will speak to generalization.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="measurement">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="meta-strip"><span class="idx">§07</span><span class="tag">Measurement</span><span>Who checks the checkers</span></div>
+      <h2>The measurement layer failed four times</h2>
+      <p class="sec-lede">A system that verifies protocols is only as trustworthy as the apparatus that scores it — and in this work that apparatus was wrong four separate times. Each defect stayed invisible until an unrelated change exposed it, and each sat in a layer whose own correctness nothing checked. We report them because the base rate suggests there are others.</p>
+    </div>
+
+    <div class="failtax">
+      <div class="row">
+        <span class="fid">Harness rule</span><span class="fn">defect 1</span>
+        <span class="fd">An identifier-prefix rule in the scoring runner credited <em>every</em> locked compile failure as a correct refusal. Caught and disclosed; the corrected figure is the one reported.</span>
+      </div>
+      <div class="row">
+        <span class="fid">Vacuous checker</span><span class="fn">defect 2</span>
+        <span class="fd">The refusal checker passed a protocol that had abandoned the requested constraint. The structural problem: a correct refusal produces no execution trace, so a trace-based checker cannot distinguish it from any other absence of execution. The assertion required — that nothing was admitted, that the compiler declared the request unsatisfiable, that no dose was spent — is about the compile outcome, and belongs in the harness rather than the checker library. That restructuring has not been done, so this refusal result rests on inspection of compile artifacts rather than an automated check.</span>
+      </div>
+      <div class="row">
+        <span class="fid">Analyser blind spot</span><span class="fn">defect 3</span>
+        <span class="fd">The contract-grounding analyser written to catch unsatisfiable requirements reported one such contract as grounded — because it read only one of the two spellings the contract stage emits.</span>
+      </div>
+      <div class="row">
+        <span class="fid">Outage scored as refusal</span><span class="fn">defect 4</span>
+        <span class="fd">An API outage mid-run caused <em>infrastructure</em> failures to be recorded as correct refusals. A checker that infers refusal from the absence of a result cannot tell a principled refusal from a network error — the same structural flaw as defect 2, surfacing through a different door.</span>
+      </div>
+    </div>
+
+    <div class="stats" style="margin-top:36px">
+      <div class="stat"><div class="v">33→38<small>/38</small></div><div class="l">Held-out fault detection, before → after the L19 value-range lint</div></div>
+      <div class="stat"><div class="v">4</div><div class="l">Defects found in the measurement apparatus itself</div></div>
+      <div class="stat"><div class="v">37→39</div><div class="l">Score when the contract layer is <em>removed</em> — it earns its place against the metric</div></div>
+      <div class="stat"><div class="v">8×</div><div class="l">Artifact-provenance incidents across the revision cycle</div></div>
+    </div>
+
+    <figure class="dagplate sm" style="margin-top:28px">
+      <svg class="dag" viewBox="0 0 880 250" role="img" aria-label="Ablation results. Removing the rehearsal layer drops the locked score from 37 to 29. Removing the contract layer raises it from 37 to 39. The two layers therefore justify themselves in opposite ways.">
+        <text class="axl" x="24" y="26">ABLATION · LOCKED SUITE SCORE OF 50</text>
+        <line class="conn" x1="24" y1="196" x2="856" y2="196" stroke="#4A5850" stroke-dasharray="3 3"/>
+
+        <rect class="barg" x="60" y="88" width="120" height="108"/>
+        <text class="val" x="60" y="79">37</text>
+        <text class="sb" x="60" y="216">full system</text>
+        <text class="sb" x="60" y="232">baseline</text>
+
+        <rect class="barn" x="250" y="112" width="120" height="84"/>
+        <text class="val" x="250" y="103">29</text>
+        <text class="am" x="250" y="216">− rehearsal</text>
+        <text class="sb" x="250" y="232">score falls by 8</text>
+
+        <rect class="barp" x="440" y="82" width="120" height="114"/>
+        <text class="val" x="440" y="73">39</text>
+        <text class="hi" x="440" y="216">− contract layer</text>
+        <text class="sb" x="440" y="232">score <tspan class="hi">rises</tspan> by 2</text>
+
+        <text class="sb" x="620" y="96">Rehearsal earns its place</text>
+        <text class="hi" x="620" y="114">on the metric — it repairs</text>
+        <text class="sb" x="620" y="132">protocols that would fail.</text>
+        <text class="sb" x="620" y="164">The contract layer earns its</text>
+        <text class="am" x="620" y="182">place against the metric —</text>
+        <text class="sb" x="620" y="200">it rejects protocols the</text>
+        <text class="sb" x="620" y="218">checkers would have passed.</text>
+      </svg>
+    </figure>
+    <p class="dag-caption"><b>Fig. 7 — Two layers, two kinds of justification.</b> An ablation that only ever confirms the design teaches nothing. These disagree: rehearsal is vindicated by the score, the contract layer is convicted by it. A layer whose removal <em>improves</em> your headline number is either dead weight or evidence that the metric is too permissive — and here the rejected protocols are ones the checkers should not have accepted.</p>
+
+    <div class="thesis" style="margin:28px 0 0">
+      <p><b>The results that argue against the system are the ones worth reading.</b> A held-out fault study caught 33 of 38 injected faults and localized every escape to the same blind spot: the gate validated structure and identifiers but never <em>values</em>, so a well-formed, correctly-named, physically wrong setpoint passed. Adding the L19 value-range lint takes detection to 38/38 — the fix is real, and so is the fact that the gate shipped without it for as long as it did.</p>
+      <p style="font-size:16px;margin-top:16px;color:#2A2F2B">Three distinct mechanisms sit beneath the contract failures — <b>ungrounded names</b>, <b>scoping limitations</b>, and <b>arithmetic errors</b> — which is why a single repair moved the score without emptying the category. And the ablation corrected an error in our own published diagnosis: LK09 fails at grounding, not at post-condition checking as the paper had claimed. A diagnosis overturned by the experiment meant to confirm it is the most useful thing an ablation can produce.</p>
+      <div class="attrib">Held-out fault study · contract &amp; rehearsal ablations</div>
+    </div>
+
+    <p class="dag-caption" style="margin-top:24px">Artifact provenance is the quiet systemic issue: scoreboard paths overwritten, rejected drafts co-located with admitted protocols, rehearsal reports written under the wrong filename — seven distinct instances in one revision cycle. Every headline number on this page depends on knowing which file produced it.</p>
+
+    <p class="dag-caption" style="margin-top:20px">We draw no comfort from having found all four. The systematic remedy — a held-out evaluation of the evaluation apparatus itself — is not something we have done, and we say so rather than implying the measurement layer is now sound.</p>
+  </div>
+</section>
+
+<section id="stack">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="meta-strip"><span class="idx">§08</span><span class="tag">Instrument stack</span><span>Spectra 300 · layered control · invariants below MCP</span></div>
+      <h2>From protocol to lens current</h2>
+      <p class="sec-lede">Hardware execution uses layered control bridged over the lab LAN. Every layer above the invariant boundary can fail arbitrarily without the instrument leaving its safe envelope.</p>
+    </div>
+    <figure class="dagplate sm" style="margin-bottom:14px">
+      <svg class="dag" viewBox="0 0 880 190" role="img" aria-label="Logarithmic comparison of response latencies. The reflex layer responds in 6.6 microseconds median, 7.5 microseconds at the 95th percentile and 10.4 microseconds worst case over 200 trials, while median compile latency is 2114 milliseconds, a ratio of about 320,000 to one.">
+        <style>.dag .tick{stroke:#2A342E;stroke-width:1}</style>
+        <text class="axl" x="24" y="24">RESPONSE LATENCY · LOG SCALE, MILLISECONDS</text>
+
+        <line class="tick" x1="150" y1="150" x2="150" y2="44"/>
+        <line class="tick" x1="326" y1="150" x2="326" y2="44"/>
+        <line class="tick" x1="502" y1="150" x2="502" y2="44"/>
+        <line class="tick" x1="678" y1="150" x2="678" y2="44"/>
+        <line class="tick" x1="854" y1="150" x2="854" y2="44"/>
+        <text class="sb" x="140" y="168">10⁻²</text>
+        <text class="sb" x="316" y="168">10⁰</text>
+        <text class="sb" x="492" y="168">10²</text>
+        <text class="sb" x="668" y="168">10⁴</text>
+        <text class="sb" x="838" y="168">10⁶</text>
+
+        <rect class="barp" x="24" y="52" width="76" height="22"/>
+        <text class="hi" x="160" y="66">reflex layer · 6.6 µs median — contingency response, no model</text>
+        <text class="sb" x="160" y="82">p95 7.5 µs · max 10.4 µs · n = 200</text>
+
+        <rect class="barn" x="24" y="100" width="618" height="22"/>
+        <text class="am" x="650" y="116">compile · 2114 ms median</text>
+
+        <line class="tick" x1="100" y1="146" x2="620" y2="146" stroke="#D9A15C" stroke-dasharray="4 4"/>
+        <text class="am" x="330" y="140">gap ≈ 3.2 × 10⁵</text>
+      </svg>
+    </figure>
+    <p class="dag-caption"><b>Fig. 6 — Why the reflex layer cannot be a model call.</b> Five orders of magnitude separate contingency response from compilation. The earlier reported figure of 0.012 ms was a display artifact of the timing harness; the measured median is 6.6 µs, with a worst case of 10.4 µs over 200 trials. Anything that must react to a drifting stage or a saturating detector has to live below the compiler, which is why safety sits in the runtime rather than in the plan.</p>
+
+    <div class="stack">
+      <div class="layer"><span class="ln">Protocol runtime</span><span class="ld">Deterministic FSM interpreter — replays verified protocols, checks ledger post-conditions per state, <em>no model in the loop</em></span></div>
+      <div class="layer"><span class="ln">Safety invariants</span><span class="ld">Enforced <em>below the MCP layer</em>: setpoint clamps, dose and tilt envelopes, mandatory return-to-safe transitions</span></div>
+      <div class="layer"><span class="ln">Transport</span><span class="ld">ZeroMQ bridge over LAN between control host and instrument PCs</span></div>
+      <div class="layer"><span class="ln">Vendor APIs</span><span class="ld">TFS AutoScript · legacy TEMScripting / ESVision COM via <em>comtypes</em> · Gatan DigitalMicrograph · CEOS Auto S-CORR</span></div>
+      <div class="layer"><span class="ln">Rehearsal twin</span><span class="ld">TWIN behavioral simulator + abTEM multimodal forward models: HAADF · ABF · 4D-STEM (virtual detectors, iCOM) · CBED</span></div>
+      <div class="layer"><span class="ln">Instrument</span><span class="ld">Thermo Fisher Spectra 300 · Center for Nanoscale Materials, Argonne</span></div>
+    </div>
+    <p class="dag-caption" style="margin-top:12px"><b>Fig. 2 — Layered instrument control.</b> The reflex layer answers in \(6.6\,\mu\mathrm{s}\) against a \(2114\,\mathrm{ms}\) median compile latency — a ratio of \(\sim\!3.2\times10^{5}\), which is why contingency response cannot wait on a model. Verified protocols descend through the stack; safety invariants sit between the runtime and every vendor API, so nothing above the boundary — including the runtime itself — can command an action outside the safe envelope.</p>
+  </div>
+</section>
+
+<section id="science">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="meta-strip"><span class="idx">§09</span><span class="tag">Science loop</span><span>Hypothesis → discriminability → modality escalation</span></div>
+      <h2>The instrument chooses its detector for a reason</h2>
+      <p class="sec-lede">Every TEM question is really a question about which signal carries the answer. Light-element order, strain, valence, magnetic and polar structure, short-range disorder — each is legible in some modalities and invisible in others, and the ladder from imaging to diffraction to 4D acquisition costs more dose and time at every rung. TEM-Scientist compiles that decision: a hypothesis is scored against forward simulations, and the protocol stops at the first modality that can actually discriminate it.</p>
+    </div>
+
+    <div class="eq" data-label="The escalation rule" data-num="EQ 4">
+      <span class="expr">$$m^{\star} \;=\; \operatorname*{arg\,min}_{m \,\in\, \mathcal{M}} \; \mathrm{cost}(m)
+      \qquad \text{s.t.} \qquad D_m(H) \;\ge\; \tau$$</span>
+      <dl class="where">
+        <dt>𝓜</dt><dd>the modality ladder — HAADF, ABF/iDPC, 4D-STEM, CBED</dd>
+        <dt>D<sub>m</sub>(H)</dt><dd>discriminability of hypothesis <em>H</em> under modality <em>m</em>, scored against forward simulation rather than guessed at the console</dd>
+        <dt>cost(m)</dt><dd>monotone in dose, acquisition time, and data volume — which is what makes stopping early worth something</dd>
+        <dt>τ</dt><dd>the discrimination threshold; only <em>D</em> and <em>τ</em> change between materials, never the machinery around them</dd>
+      </dl>
+    </div>
+
+    <figure class="dagplate sm">
+      <svg class="dag" viewBox="0 0 900 330" role="img" aria-label="Modality escalation schematic: a structural hypothesis is scored for discriminability against forward simulations of each modality. HAADF, the cheapest rung, falls below the discrimination threshold and is rejected; ABF or iDPC clears it and is selected; 4D-STEM and CBED remain as further rungs held in reserve. The selected modality is compiled into the protocol.">
+        <style>
+          .dag .dim{opacity:.45}
+        </style>
+        <!-- hypothesis -->
+        <rect class="bx bx-model" x="24" y="34" width="196" height="66"/>
+        <text class="nm" x="38" y="58">Hypothesis H</text>
+        <text class="sb" x="38" y="76">a structural claim about</text>
+        <text class="sb" x="38" y="90">the specimen</text>
+        <path class="lG" d="M220 67 L262 67"/>
+
+        <!-- forward sim -->
+        <rect class="bx" x="266" y="34" width="188" height="66"/>
+        <text class="nm" x="280" y="58">Discriminability score</text>
+        <text class="sb" x="280" y="76">abTEM forward models</text>
+        <text class="sb" x="280" y="90">contrast of H per modality</text>
+
+        <!-- ladder -->
+        <path class="lA" d="M454 55 L520 55"/>
+        <rect class="bx bx-gate" x="524" y="30" width="164" height="52"/>
+        <text class="nm" x="538" y="51">HAADF</text>
+        <text class="am" x="538" y="68">Z-contrast · cheapest rung</text>
+        <text class="am" x="700" y="44">✗ below discrimination</text>
+        <text class="am" x="700" y="60">threshold for H</text>
+
+        <path class="lG" d="M454 80 L454 128 L520 128"/>
+        <rect class="bx bx-hw" x="524" y="102" width="164" height="52"/>
+        <text class="nm" x="538" y="123">ABF / iDPC</text>
+        <text class="hi" x="538" y="140">light elements, phase ✓</text>
+        <path class="lG" d="M688 128 L748 128"/>
+
+        <rect class="bx dim" x="524" y="174" width="164" height="52"/>
+        <text class="nm dim" x="538" y="195">4D-STEM · iCOM</text>
+        <text class="sb dim" x="538" y="212">held in reserve</text>
+        <rect class="bx dim" x="524" y="246" width="164" height="52"/>
+        <text class="nm dim" x="538" y="267">CBED</text>
+        <text class="sb dim" x="538" y="284">held in reserve</text>
+        <path class="lB dim" d="M606 154 L606 174"/>
+        <path class="lB dim" d="M606 226 L606 246"/>
+
+        <!-- compiled outcome -->
+        <rect class="bx bx-hw" x="752" y="102" width="128" height="52"/>
+        <text class="nm" x="766" y="123">Compile π</text>
+        <text class="sb" x="766" y="140">detector.select: ABF</text>
+
+        <!-- order parameter note -->
+        <text class="sb" x="24" y="196">Discriminability is quantified, not eyeballed: an order</text>
+        <text class="sb" x="24" y="212">parameter defined by the hypothesis scores each modality</text>
+        <text class="sb" x="24" y="228">against simulated data before any beam time is spent.</text>
+        <text class="sb" x="24" y="258">Escalation is monotone in cost — dose, acquisition time and</text>
+        <text class="sb" x="24" y="274">data volume all rise down the ladder — so the compiler stops</text>
+        <text class="sb" x="24" y="290">at the first rung that discriminates. The ladder is general;</text>
+        <text class="am" x="24" y="306">HfO₂ domain walls are the worked test case.</text>
+      </svg>
+    </figure>
+    <p class="dag-caption"><b>Fig. 3 — Modality escalation, grounded in physics.</b> The ladder is material-agnostic: what changes between problems is the order parameter that defines discrimination, not the machinery around it. <b>Worked test case:</b> a 180° ferroelectric wall in HfO₂ registers only ~8% contrast in HAADF but is resolvable through the oxygen sublattice in ABF/iDPC — the wall located at ~20.08 Å by a vector order parameter, against a 20.1 Å manual ground truth. <b>Caveat earned the hard way:</b> in the first simulation run ABF contrast was zero — not from dose or detector geometry but because the polarization axis lay parallel to the beam, making the signal invisible by construction. Specimen <em>orientation</em> is therefore part of the ground truth, and any escalation policy that ignores zone axis will escalate for the wrong reason.</p>
+
+    <table class="lints" style="margin-top:8px">
+      <thead><tr><th>Scientific question</th><th>Discriminating signal</th><th>Where the ladder stops</th></tr></thead>
+      <tbody>
+        <tr><td>Light-element position and occupancy — oxygen, lithium, nitrogen sublattices</td><td class="grp">phase contrast</td><td class="lid">ABF · iDPC</td></tr>
+        <tr><td>Local strain, octahedral tilt, and lattice distortion fields</td><td class="grp">disc shift / NBED</td><td class="lid">4D-STEM</td></tr>
+        <tr><td>Short-range order, symmetry breaking, and polarity in nominally uniform regions</td><td class="grp">HOLZ / kinematic forbidden reflections</td><td class="lid">CBED</td></tr>
+        <tr><td>Heavy-atom composition and interface abruptness</td><td class="grp">Z-contrast</td><td class="lid">HAADF</td></tr>
+        <tr class="wip"><td>Valence state, coordination, and bonding<span class="badge">Next</span></td><td class="grp">core-loss fine structure</td><td class="lid">EELS</td></tr>
+      </tbody>
+    </table>
+    <p class="dag-caption" style="margin-top:12px">The escalation policy is one mechanism serving many questions. Ferroelectric HfO₂ exercises the hardest case — a structure invisible to the default modality — which is why it is the test bed rather than the subject.</p>
+  </div>
+</section>
+
+<section id="roadmap">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="meta-strip"><span class="idx">§10</span><span class="tag">Roadmap</span><span>One platform · three capability stages</span></div>
+      <h2>Toward autonomous TEM</h2>
+      <p class="sec-lede">TEM-Scientist is built as a platform for autonomous electron microscopy, staged so that each capability is earned before the next is attempted: verify in simulation, transfer to hardware, then do science.</p>
+    </div>
+    <div class="papers">
+      <div class="paper">
+        <span class="num">Stage · Verify <span class="st">Now</span></span>
+        <h3>Verified autonomy in simulation</h3>
+        <p>The full compile–rehearse–execute–reflect loop, proven against TWIN: typed protocol schema, lint suite L1–L15 with contract fidelity checks, ROC-characterized rehearsal via 11+2 mutation classes, and a locked, task-clustered evaluation carried through a full diagnose → predict → repair → re-evaluate cycle — including the regression that cycle produced.</p>
+        <div class="foot">Manuscript v1.0-rc27 · journal template · locked v2 next</div>
+      </div>
+      <div class="paper">
+        <span class="num">Stage · Deploy <span class="st gated">Gated</span></span>
+        <h3>Sim-to-real on the Spectra 300</h3>
+        <p>Verified protocols cross to hardware over ZeroMQ-bridged AutoScript / COM / DigitalMicrograph / CEOS layers. Shadow mode runs first: hardware ledgers compared against TWIN predictions step by step, with safety invariants enforced below the control layer throughout. An AutoScript-compatible facade over TWIN doubles as groundwork for the bridge — and as a public testbed for comparing control paradigms on identical tasks.</p>
+        <div class="foot">Spectra 300 · CNM, Argonne · shadow → live</div>
+      </div>
+      <div class="paper">
+        <span class="num">Stage · Discover <span class="st gated">Planned</span></span>
+        <h3>Hypothesis-driven investigation</h3>
+        <p>The platform runs the science loop end to end: hypotheses about interfaces, defect populations, and ordering drive compiled modality escalation, with beam time spent only where discrimination demands it. The first campaign targets ferroelectric HfO₂ — chosen because its domain walls defeat the default modality — before generalizing to other oxide, 2D, and beam-sensitive systems.</p>
+        <div class="foot">First campaign: HfO₂ · then broader material classes</div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap foot-grid">
+    <span>TEM-Scientist · compile · rehearse · execute · reflect</span>
+    <span>Manna &amp; Sankaranarayanan · UIC · Argonne CNM</span>
+    <span>Code and benchmark release with publication</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  const canvas = document.getElementById('lattice');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const btnH = document.getElementById('btn-haadf');
+  const btnA = document.getElementById('btn-abf');
+  const note = document.getElementById('wallNote');
+
+  // Precompute lattice: heavy (Hf) columns on a slightly monoclinic grid,
+  // light (O) columns displaced antiparallel across a 180° wall at x = W/2.
+  const a = 46, b = 40, shear = 6;
+  const sites = [];
+  for(let j=-1; j<H/b+2; j++){
+    for(let i=-1; i<W/a+2; i++){
+      const x = i*a + (j%2)*(a/2) + (j*shear)%a*0.15;
+      const y = j*b;
+      const domain = x < W/2 ? -1 : 1;          // polarization direction
+      const jit = () => (Math.random()-0.5)*1.6; // static positional noise
+      sites.push({x:x+jit(), y:y+jit(), domain});
+    }
+  }
+  // per-pixel noise field (static, generated once)
+  const noise = ctx.createImageData(W,H);
+  for(let p=0;p<noise.data.length;p+=4){
+    const v = Math.random()*22;
+    noise.data[p]=v; noise.data[p+1]=v; noise.data[p+2]=v; noise.data[p+3]=18;
+  }
+
+  function blob(x,y,r,bright,g){
+    const grd = ctx.createRadialGradient(x,y,0,x,y,r);
+    grd.addColorStop(0, 'rgba('+bright+','+(bright+g)+','+bright+',1)');
+    grd.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = grd;
+    ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill();
+  }
+
+  function render(mode){
+    ctx.fillStyle = mode==='HAADF' ? '#05070a' : '#e6ebe7';
+    ctx.fillRect(0,0,W,H);
+    for(const s of sites){
+      if(mode==='HAADF'){
+        // Z-contrast: Hf bright, O invisible; wall a whisper (~8%)
+        const wallDim = Math.abs(s.x - W/2) < a*0.7 ? 0.92 : 1.0;
+        blob(s.x, s.y, 11, Math.round(215*wallDim), 14);
+        // oxygen: effectively lost in noise
+        blob(s.x + s.domain*7, s.y + 12, 5, 26, 6);
+      } else {
+        // ABF: inverted contrast, oxygen visible; displacement flips at wall
+        ctx.globalCompositeOperation = 'multiply';
+        blob2(s.x, s.y, 12, 40);                       // dark Hf
+        blob2(s.x + s.domain*7, s.y + 12, 6.5, 95);    // dark O, displaced
+        ctx.globalCompositeOperation = 'source-over';
+      }
+    }
+    if(mode==='ABF'){
+      // annotate the wall
+      ctx.strokeStyle = 'rgba(185,111,31,0.85)';
+      ctx.setLineDash([6,6]); ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(W/2,0); ctx.lineTo(W/2,H); ctx.stroke();
+      ctx.setLineDash([]);
+    }
+    ctx.drawImage(noiseCanvas,0,0);
+    canvas.parentElement.classList.toggle('abf', mode==='ABF');
+  }
+
+  function blob2(x,y,r,dark){
+    const grd = ctx.createRadialGradient(x,y,0,x,y,r);
+    const v = 255-dark;
+    grd.addColorStop(0, 'rgb('+v+','+(v+4)+','+v+')');
+    grd.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.fillStyle = grd;
+    ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill();
+  }
+
+  // bake noise onto its own canvas once
+  const noiseCanvas = document.createElement('canvas');
+  noiseCanvas.width=W; noiseCanvas.height=H;
+  noiseCanvas.getContext('2d').putImageData(noise,0,0);
+
+  function setMode(mode){
+    btnH.setAttribute('aria-pressed', mode==='HAADF');
+    btnA.setAttribute('aria-pressed', mode==='ABF');
+    note.textContent = mode==='HAADF'
+      ? 'wall contrast ≈ 8% — try ABF'
+      : '180° wall resolved via O sublattice';
+    note.style.color = mode==='HAADF' ? '#B96F1F' : '#2F7D5B';
+    render(mode);
+  }
+  btnH.addEventListener('click', ()=>setMode('HAADF'));
+  btnA.addEventListener('click', ()=>setMode('ABF'));
+  setMode('HAADF');
+})();
+</script>
+</body>
+</html>

@@ -79,6 +79,11 @@ ninja.data = [{
           description: "70,000+ DFT-computed atomically precise cluster structures across 55 elements",
           section: "Projects",handler: () => {
               window.location.href = "/projects/quantum-cluster-database/";
+            },},{id: "projects-tem-scientist",
+          title: 'TEM-Scientist',
+          description: "Compiled autonomy for transmission electron microscopy",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/tem-scientist/";
             },},{
         id: 'social-cv',
         title: 'CV',
