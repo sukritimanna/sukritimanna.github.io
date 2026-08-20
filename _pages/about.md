@@ -9,10 +9,8 @@ profile:
   image: prof_pic.jpg
   image_circular: false
   more_info: >
-    <p><a href="mailto:smanna@uic.edu"><strong>smanna@uic.edu</strong></a> (work)</p>
-    <p><a href="mailto:sukriti.manna@gmail.com">sukriti.manna@gmail.com</a> (personal)</p>
-    <p>842 W Taylor St</p>
-    <p>Chicago, IL 60607</p>
+    <p><a href="mailto:smanna@uic.edu">smanna@uic.edu</a></p>
+    <p><a href="mailto:sukriti.manna@gmail.com">sukriti.manna@gmail.com</a></p>
 
 news: true
 selected_papers: true
