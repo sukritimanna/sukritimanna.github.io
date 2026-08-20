@@ -2,7 +2,7 @@
 layout: about
 title: about
 permalink: /
-subtitle: Visiting Research Assistant Professor, <a href='https://mie.uic.edu/'>University of Illinois Chicago</a> · Resident Associate, <a href='https://www.anl.gov/cnm'>Argonne National Laboratory</a>
+subtitle: Research Assistant Professor, <a href='https://mie.uic.edu/'>University of Illinois Chicago</a> · Resident Associate, <a href='https://www.anl.gov/cnm'>Argonne National Laboratory</a>
 
 profile:
   align: right
@@ -25,7 +25,7 @@ My current research centers on **agentic AI for scientific instruments and simul
 
 I apply these workflows to **autonomous discovery of neuromorphic computing materials**, **thermal management for high-performance computing hardware**, **data-driven additive-manufacturing optimization**, and **next-generation energy and electronic materials**. Selected outcomes have appeared in *Science*, *Nature Communications*, *Science Advances*, *Advanced Materials*, *ACS Nano*, and *Nano Letters*.
 
-I am a Visiting Research Assistant Professor in the Department of Mechanical and Industrial Engineering at the **University of Illinois Chicago**, and a Resident Associate in the Theory and Modeling Group at **Argonne National Laboratory's Center for Nanoscale Materials**, working with [Prof. Subramanian Sankaranarayanan](https://mie.uic.edu/profiles/sankaranarayanan-subramanian/). I received my Ph.D. in Mechanical Engineering from **Colorado School of Mines** (2018) with Prof. Cristian V. Ciobanu and Prof. Vladan Stevanović, and held a postdoctoral position at **Johns Hopkins University** with Prof. Tim Mueller before joining Argonne in 2019.
+I am a Visiting Research Assistant Professor in the Department of Mechanical and Industrial Engineering at the **University of Illinois Chicago**, and a Resident Associate in the Theory and Modeling Group at **Argonne National Laboratory's Center for Nanoscale Materials**, working with [Prof. Subramanian Sankaranarayanan](https://mie.uic.edu/profiles/sankaranarayanan-subramanian/). I received my Ph.D. in Mechanical Engineering from **Colorado School of Mines** (2018) with [Prof. Cristian V. Ciobanu](https://scholar.google.com/citations?user=hK_FHOUAAAAJ) and [Prof. Vladan Stevanović](https://scholar.google.com/citations?user=itfRzZAAAAAJ), and held a postdoctoral position at **Johns Hopkins University** with [Prof. Tim Mueller](https://muellergroup.jhu.edu/) before joining Argonne in 2019.
 
 ---
 
