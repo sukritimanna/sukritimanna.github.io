@@ -37,3 +37,9 @@
 @use "font-awesome/brands";
 @use "font-awesome/solid";
 @use "font-awesome/regular";
+
+/* Constrain profile picture width on about page */
+.profile img {
+  max-width: 220px;
+  height: auto;
+}
