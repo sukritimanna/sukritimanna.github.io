@@ -1,14 +1,9 @@
 github_users:
-  - torvalds
-  - alshedivat
+  - sukritimanna
 
 repo_description_lines_max: 2
 
+# Add the repositories you want to feature on the /repositories/ page.
+# Format: <owner>/<repo-name>
 github_repos:
-  - alshedivat/al-folio
-  - jekyll/jekyll
-  - twbs/bootstrap
-  - jquery/jquery
-  - FortAwesome/Font-Awesome
-  - mathjax/MathJax
-  - jpswalsh/academicons
+  - sukritimanna/sukritimanna.github.io

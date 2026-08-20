@@ -2,33 +2,27 @@
 layout: about
 title: about
 permalink: /
-subtitle: <a href='#'>Affiliations</a>. Address. Contacts. Motto. Etc.
+subtitle: Visiting Research Assistant Professor, <a href='https://mie.uic.edu/'>University of Illinois Chicago</a> · Resident Associate, <a href='https://www.anl.gov/cnm'>Argonne National Laboratory</a>
 
 profile:
   align: right
   image: prof_pic.jpg
-  image_circular: false # crops the image to make it circular
+  image_circular: false
   more_info: >
-    <p>555 your office number</p>
-    <p>123 your address street</p>
-    <p>Your City, State 12345</p>
+    <p><a href="mailto:smanna@uic.edu"><strong>smanna@uic.edu</strong></a> (work)</p>
+    <p><a href="mailto:sukriti.manna@gmail.com">sukriti.manna@gmail.com</a> (personal)</p>
+    <p>842 W Taylor St</p>
+    <p>Chicago, IL 60607</p>
 
-selected_papers: true # includes a list of papers marked as "selected={true}"
-social: true # includes social icons at the bottom of the page
-
-announcements:
-  enabled: true # includes a list of news items
-  scrollable: true # adds a vertical scroll bar if there are more than 3 news items
-  limit: 5 # leave blank to include all the news in the `_news` folder
-
-latest_posts:
-  enabled: true
-  scrollable: true # adds a vertical scroll bar if there are more than 3 new posts items
-  limit: 3 # leave blank to include all the blog posts
+news: true
+selected_papers: true
+social: true
 ---
 
-Write your biography here. Tell the world about yourself. Link to your favorite [subreddit](https://www.reddit.com). You can put a picture in, too. The code is already in, just name your picture `prof_pic.jpg` and put it in the `img/` folder.
+I build **autonomous AI workflows for materials discovery, design, and simulation** — integrating quantum mechanics, atomistic modeling, and continuum-scale simulation with reinforcement learning, graph neural networks, and most recently multi-agent LLM systems.
 
-Put your address / P.O. box / other info right below your picture. You can also disable any of these elements by editing `profile` property of the YAML header of your `_pages/about.md`. Edit `_bibliography/papers.bib` and Jekyll will render your [publications page](/al-folio/publications/) automatically.
+My current research centers on **agentic AI for scientific simulation**: AI systems that can autonomously specify, execute, debug, and analyze physics-based simulations. The flagship project is [AutoMOOSE](/projects/automoose/), a multi-agent LLM framework for phase-field modeling. This builds on a longer arc of reinforcement-learning methods I have developed for atomistic potential construction ([BLAST](/projects/blast/)) and inverse materials design ([CASTING](/projects/casting/)), and on data-driven infrastructure such as the [Quantum Cluster Database](/projects/quantum-cluster-database/) — the largest open repository of atomically precise nanoclusters, with **70,000+ DFT-computed structures across 55 elements**.
 
-Link to your social media connections, too. This theme is set up to use [Font Awesome icons](https://fontawesome.com/) and [Academicons](https://jpswalsh.github.io/academicons/), like the ones below. Add your Facebook, Twitter, LinkedIn, Google Scholar, or just disable all of them.
+I apply these workflows to **autonomous discovery of neuromorphic computing materials**, **thermal management for high-performance computing hardware**, **data-driven additive-manufacturing optimization**, and **next-generation energy and electronic materials**. Selected outcomes have appeared in *Science*, *Nature Communications*, *Science Advances*, *Advanced Materials*, *ACS Nano*, and *Nano Letters*.
+
+I am a Visiting Research Assistant Professor in the Department of Mechanical and Industrial Engineering at the **University of Illinois Chicago**, and a Resident Associate in the Theory and Modeling Group at **Argonne National Laboratory's Center for Nanoscale Materials**, working with [Prof. Subramanian Sankaranarayanan](https://mie.uic.edu/profiles/sankaranarayanan-subramanian/). I received my Ph.D. in Mechanical Engineering from **Colorado School of Mines** (2018) with Prof. Cristian V. Ciobanu and Prof. Vladan Stevanović, and held a postdoctoral position at **Johns Hopkins University** with Prof. Tim Mueller before joining Argonne in 2019.
