@@ -81,7 +81,7 @@ ninja.data = [{
               window.location.href = "/projects/quantum-cluster-database/";
             },},{id: "projects-tem-scientist",
           title: 'TEM-Scientist',
-          description: "Compiled autonomy for transmission electron microscopy",
+          description: "Verified experimental protocols for agentic electron microscopy",
           section: "Projects",handler: () => {
               window.location.href = "/projects/tem-scientist/";
             },},{
