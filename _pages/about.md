@@ -19,47 +19,26 @@ social: true
 
 I build **autonomous AI workflows for materials discovery, design, and simulation** — integrating quantum mechanics, atomistic modeling, and continuum-scale simulation with reinforcement learning, graph neural networks, and multi-agent LLM systems.
 
-<div class="stats-banner">
-  <div class="stat"><b>50+</b><span>Publications</span></div>
-  <div class="stat"><b>1,900+</b><span>Citations</span></div>
-  <div class="stat"><b>23</b><span>h-index</span></div>
-  <div class="stat"><b>Featured in</b><span><em>Science</em> · <em>Nature Comm.</em> · <em>Sci. Adv.</em> · <em>Adv. Mater.</em> · <em>ACS Nano</em></span></div>
-</div>
+<p class="research-stats">
+  <strong>50+ publications</strong> · <strong>2,100+ citations</strong> · <strong>h-index 24</strong> · Featured in <em>Science</em>, <em>Nature Communications</em>, <em>Science Advances</em>, <em>Advanced Materials</em>, <em>ACS Nano</em>, and <em>Nano Letters</em>
+</p>
 
 <style>
-.stats-banner {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1px;
-  background: var(--global-divider-color);
-  border: 1px solid var(--global-divider-color);
-  border-radius: 12px;
-  overflow: hidden;
-  margin: 2rem 0;
-}
-.stats-banner .stat {
-  background: var(--global-bg-color);
-  padding: 1.25rem 1rem;
-  text-align: left;
-}
-.stats-banner .stat b {
-  display: block;
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: var(--global-theme-color);
-  letter-spacing: -0.02em;
-  line-height: 1.1;
-  margin-bottom: 0.25rem;
-}
-.stats-banner .stat span {
-  font-size: 0.85rem;
+.research-stats {
+  font-size: 0.95rem;
   color: var(--global-text-color-light);
+  padding: 0.9rem 1.1rem;
+  margin: 1.5rem 0;
+  border-left: 3px solid var(--global-theme-color);
+  background: var(--global-code-bg-color);
+  line-height: 1.6;
 }
-.stats-banner .stat em {
+.research-stats strong {
+  color: var(--global-text-color);
+  font-weight: 600;
+}
+.research-stats em {
   font-style: italic;
-}
-@media (max-width: 640px) {
-  .stats-banner { grid-template-columns: repeat(2, 1fr); }
 }
 </style>
 
