@@ -11,7 +11,7 @@ ninja.data = [{
     },
   },{id: "nav-research",
           title: "research",
-          description: "Autonomous materials science across scales",
+          description: "Autonomous materials discovery across scales",
           section: "Navigation",
           handler: () => {
             window.location.href = "/research/";
