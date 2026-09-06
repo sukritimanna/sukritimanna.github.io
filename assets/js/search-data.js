@@ -11,7 +11,7 @@ ninja.data = [{
     },
   },{id: "nav-research",
           title: "research",
-          description: "Autonomous AI workflows for materials discovery, design, and simulation",
+          description: "Autonomous materials science across scales",
           section: "Navigation",
           handler: () => {
             window.location.href = "/research/";
