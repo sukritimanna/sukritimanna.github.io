@@ -18,7 +18,7 @@ ninja.data = [{
           },
         },{id: "nav-publications",
           title: "publications",
-          description: "50 peer-reviewed publications · 1925+ citations · h-index 23 · i10-index 30",
+          description: "52 peer-reviewed publications · 2100+ citations · h-index 24 · i10-index 30",
           section: "Navigation",
           handler: () => {
             window.location.href = "/publications/";
