@@ -25,7 +25,7 @@ nav_order: 2
    ============================================================ */
 
 .publications--section { counter-reset: pubcounter; }
-.publications--preprints   { counter-reset: pubcounter 8;  }
+.publications--preprints   { counter-reset: pubcounter 7;  }
 .publications--inpress     { counter-reset: pubcounter 3;  }
 .publications--journals    { counter-reset: pubcounter 51; }
 .publications--conferences { counter-reset: pubcounter 5;  }
