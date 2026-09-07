@@ -25,8 +25,7 @@ nav_order: 2
    ============================================================ */
 
 .publications--section { counter-reset: pubcounter; }
-.publications--preprints   { counter-reset: pubcounter 8;  }
-.publications--inpress     { counter-reset: pubcounter 3;  }
+.publications--preprints   { counter-reset: pubcounter 10;  }
 .publications--journals    { counter-reset: pubcounter 51; }
 .publications--conferences { counter-reset: pubcounter 5;  }
 .publications--outreach    { counter-reset: pubcounter 2;  }
@@ -93,10 +92,6 @@ see my <a href="https://scholar.google.com/citations?user=Ag2wffgAAAAJ">Google S
 {% bibliography -q @*[category=preprint] %}
 </div>
 
-<h2 class="publications-section-title">Accepted / In Press</h2>
-<div class="publications publications--section publications--inpress">
-{% bibliography -q @*[category=inpress] %}
-</div>
 <h2 class="publications-section-title">Peer-Reviewed Journal Articles</h2>
 <div class="publications publications--section publications--journals">
 {% bibliography -q @*[category=journal] %}
