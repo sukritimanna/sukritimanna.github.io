@@ -2,7 +2,7 @@
 layout: page
 permalink: /publications/
 title: publications
-description: 50 peer-reviewed publications · 1925+ citations · h-index 23 · i10-index 30
+description: 52 peer-reviewed publications · 2100+ citations · h-index 24 · i10-index 30
 nav: true
 nav_order: 2
 ---
@@ -83,7 +83,7 @@ nav_order: 2
 </style>
 
 <div class="publications-intro">
-A complete chronological list of my publications. <strong>My name is bolded</strong> in author lists.
+A complete chronological list of my publications. <strong>My name is underlined</strong> in author lists.
 Selected papers are highlighted on the <a href="/">homepage</a>. For metrics and the latest record,
 see my <a href="https://scholar.google.com/citations?user=Ag2wffgAAAAJ">Google Scholar profile</a>.
 </div>

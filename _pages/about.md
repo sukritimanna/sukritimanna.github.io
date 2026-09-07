@@ -20,7 +20,7 @@ social: true
 I build **autonomous AI workflows for materials discovery, design, and simulation** — integrating quantum mechanics, atomistic modeling, and continuum-scale simulation with reinforcement learning, graph neural networks, and multi-agent LLM systems.
 
 <p class="research-stats">
-  <strong>50+ publications</strong> · <strong>2,100+ citations</strong> · <strong>h-index 24</strong> · Featured in <em>Science</em>, <em>Nature Communications</em>, <em>Science Advances</em>, <em>Advanced Materials</em>, <em>ACS Nano</em>, and <em>Nano Letters</em>
+  <strong>52 peer-reviewed publications</strong> · <strong>2,100+ citations</strong> · <strong>h-index 24</strong> · Featured in <em>Science</em>, <em>Nature Communications</em>, <em>Science Advances</em>, <em>Advanced Materials</em>, <em>ACS Nano</em>, and <em>Nano Letters</em>
 </p>
 
 <style>
